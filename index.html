@@ -1,4 +1,4 @@
-<index.html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -70,8 +70,17 @@
             <div id="sites-container" class="space-y-6">
                 <!-- Initial site entry -->
                 <div class="site-entry p-4 border border-gray-200 rounded-lg bg-white">
-                    <h3 class="text-lg font-medium mb-4 text-gray-800">Site #1</h3>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-medium text-gray-800">Site #1</h3>
+                        <button type="button" class="text-sm font-medium text-red-600 hover:text-red-800 transition remove-site-btn">Remove</button>
+                    </div>
+                    <div class="grid grid-cols-1 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Site Name</label>
+                            <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 site-name">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Area size in m²</label>
                             <input type="number" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 area-size">
@@ -79,6 +88,11 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Relevant system required</label>
                             <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 system-required">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">Upload Photo</label>
+                            <input type="file" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 site-photo-input">
+                            <div class="mt-2 photo-preview-container"></div>
                         </div>
                     </div>
                 </div>
@@ -134,11 +148,7 @@
                 <!-- Current Condition -->
                 <div>
                     <label class="text-sm font-medium text-gray-700 mb-2 block">Current condition of the area:</label>
-                    <select id="currentCondition" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2">
-                        <option value="Bare ground">Bare ground</option>
-                        <option value="Tiles">Tiles</option>
-                        <option value="Old surfacing">Old surfacing</option>
-                    </select>
+                    <input type="text" id="currentCondition" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2">
                 </div>
             </div>
         </div>
@@ -222,6 +232,26 @@
             const colorInputContainer = document.getElementById('colorInputContainer');
             let siteCount = 1;
 
+            // Function to add photo preview
+            const handlePhotoUpload = (event) => {
+                const file = event.target.files[0];
+                const previewContainer = event.target.closest('.site-entry').querySelector('.photo-preview-container');
+                previewContainer.innerHTML = ''; // Clear previous preview
+                if (file && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.classList.add('mt-2', 'rounded-md', 'shadow-sm', 'max-w-xs', 'max-h-32', 'object-cover');
+                        previewContainer.appendChild(img);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            
+            // Initial photo input listener
+            document.querySelector('.site-photo-input').addEventListener('change', handlePhotoUpload);
+
             // Update the project name heading dynamically
             projectNameInput.addEventListener('input', () => {
                 projectHeading.textContent = projectNameInput.value ? `| ${projectNameInput.value}` : '';
@@ -243,8 +273,17 @@
                 const newSiteEntry = document.createElement('div');
                 newSiteEntry.classList.add('site-entry', 'p-4', 'border', 'border-gray-200', 'rounded-lg', 'bg-white');
                 newSiteEntry.innerHTML = `
-                    <h3 class="text-lg font-medium mb-4 text-gray-800">Site #${siteCount}</h3>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-medium text-gray-800">Site #${siteCount}</h3>
+                        <button type="button" class="text-sm font-medium text-red-600 hover:text-red-800 transition remove-site-btn">Remove</button>
+                    </div>
+                    <div class="grid grid-cols-1 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Site Name</label>
+                            <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 site-name">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Area size in m²</label>
                             <input type="number" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 area-size">
@@ -253,13 +292,27 @@
                             <label class="block text-sm font-medium text-gray-700">Relevant system required</label>
                             <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 system-required">
                         </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">Upload Photo</label>
+                            <input type="file" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 site-photo-input">
+                            <div class="mt-2 photo-preview-container"></div>
+                        </div>
                     </div>
                 `;
                 sitesContainer.appendChild(newSiteEntry);
+                // Add event listener to the new photo input
+                newSiteEntry.querySelector('.site-photo-input').addEventListener('change', handlePhotoUpload);
+            });
+
+            // Add event listener to remove a site entry
+            sitesContainer.addEventListener('click', (event) => {
+                if (event.target.classList.contains('remove-site-btn')) {
+                    event.target.closest('.site-entry').remove();
+                }
             });
 
             // Function to gather all form data
-            const getFormData = () => {
+            const getFormData = async () => {
                 const formData = {};
                 formData.companyName = document.getElementById('companyName').value;
                 formData.projectName = document.getElementById('projectName').value;
@@ -268,14 +321,29 @@
                 formData.contactNumber = document.getElementById('contactNumber').value;
                 formData.emailAddress = document.getElementById('emailAddress').value;
                 
-                formData.sites = [];
-                document.querySelectorAll('.site-entry').forEach((siteEntry) => {
+                formData.sites = await Promise.all(Array.from(document.querySelectorAll('.site-entry')).map(async (siteEntry) => {
+                    const siteName = siteEntry.querySelector('.site-name').value;
                     const areaSize = siteEntry.querySelector('.area-size').value;
                     const systemRequired = siteEntry.querySelector('.system-required').value;
-                    if (areaSize || systemRequired) {
-                        formData.sites.push({ areaSize, systemRequired });
+                    const photoInput = siteEntry.querySelector('.site-photo-input');
+                    const file = photoInput.files[0];
+                    let photoData = '';
+
+                    if (file) {
+                        photoData = await new Promise((resolve) => {
+                            const reader = new FileReader();
+                            reader.onload = () => resolve(reader.result);
+                            reader.readAsDataURL(file);
+                        });
                     }
-                });
+
+                    if (siteName || areaSize || systemRequired || photoData) {
+                        return { siteName, areaSize, systemRequired, photoData };
+                    }
+                    return null;
+                }));
+
+                formData.sites = formData.sites.filter(site => site !== null);
 
                 formData.surfacingType = [];
                 if (document.getElementById('blackRubber').checked) {
@@ -301,11 +369,11 @@
             };
 
             // Function to create the PDF from a hidden HTML template
-            generatePdfBtn.addEventListener('click', () => {
+            generatePdfBtn.addEventListener('click', async () => {
                 generatePdfBtn.disabled = true;
                 generatePdfBtn.textContent = 'Generating PDF...';
 
-                const data = getFormData();
+                const data = await getFormData();
                 
                 // Clear and populate the PDF content div
                 pdfContent.innerHTML = '';
@@ -329,9 +397,10 @@
                             <h2 style="font-size: 24px; font-weight: 700; color: #374151; margin-bottom: 8px;">Surfacing Details</h2>
                             ${data.sites.map((site, index) => `
                                 <div style="margin-bottom: 16px;">
-                                    <h3 style="font-size: 18px; font-weight: 600; color: #1f2937;">Site #${index + 1}</h3>
+                                    <h3 style="font-size: 18px; font-weight: 600; color: #1f2937;">${site.siteName || `Site #${index + 1}`}</h3>
                                     <p style="font-size: 14px;"><strong>Area Size:</strong> ${site.areaSize || 'N/A'} m²</p>
                                     <p style="font-size: 14px;"><strong>System Required:</strong> ${site.systemRequired || 'N/A'}</p>
+                                    ${site.photoData ? `<div style="margin-top: 8px;"><img src="${site.photoData}" alt="Site Photo" style="max-width: 250px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"></div>` : ''}
                                 </div>
                             `).join('')}
                         </div>
