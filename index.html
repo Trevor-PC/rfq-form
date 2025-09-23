@@ -25,6 +25,12 @@
             </h1>
             <p class="mt-2 text-lg text-gray-500">Purpose: Gather all data required to prepare a detailed and accurate quote.</p>
         </header>
+        
+        <!-- Google Drive Link Field -->
+        <div class="mb-8 p-6 bg-gray-50 rounded-lg">
+            <label for="googleDriveLink" class="block text-sm font-medium text-gray-700">Google Drive Link</label>
+            <input type="url" id="googleDriveLink" class="mt-1 block w-full rounded-md border-gray-600 shadow-sm focus:border-indigo-700 focus:ring focus:ring-indigo-300 focus:ring-opacity-50 p-2" placeholder="e.g., https://drive.google.com/drive/folders/...">
+        </div>
 
         <!-- Company Name and Project Info -->
         <div class="mb-8 p-6 bg-gray-50 rounded-lg">
@@ -32,15 +38,15 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label for="companyName" class="block text-sm font-medium text-gray-700">Company Name</label>
-                    <input type="text" id="companyName" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2">
+                    <input type="text" id="companyName" class="mt-1 block w-full rounded-md border-gray-600 shadow-sm focus:border-indigo-700 focus:ring focus:ring-indigo-300 focus:ring-opacity-50 p-2">
                 </div>
                 <div>
                     <label for="projectName" class="block text-sm font-medium text-gray-700">Project Name</label>
-                    <input type="text" id="projectName" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2">
+                    <input type="text" id="projectName" class="mt-1 block w-full rounded-md border-gray-600 shadow-sm focus:border-indigo-700 focus:ring focus:ring-indigo-300 focus:ring-opacity-50 p-2">
                 </div>
                 <div class="md:col-span-2">
                     <label for="siteLocation" class="block text-sm font-medium text-gray-700">Site Location</label>
-                    <input type="text" id="siteLocation" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2">
+                    <input type="text" id="siteLocation" class="mt-1 block w-full rounded-md border-gray-600 shadow-sm focus:border-indigo-700 focus:ring focus:ring-indigo-300 focus:ring-opacity-50 p-2">
                 </div>
             </div>
         </div>
@@ -51,15 +57,15 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
                     <label for="clientName" class="block text-sm font-medium text-gray-700">Client Name</label>
-                    <input type="text" id="clientName" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2">
+                    <input type="text" id="clientName" class="mt-1 block w-full rounded-md border-gray-600 shadow-sm focus:border-indigo-700 focus:ring focus:ring-indigo-300 focus:ring-opacity-50 p-2">
                 </div>
                 <div>
                     <label for="contactNumber" class="block text-sm font-medium text-gray-700">Contact Number</label>
-                    <input type="tel" id="contactNumber" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2">
+                    <input type="tel" id="contactNumber" class="mt-1 block w-full rounded-md border-gray-600 shadow-sm focus:border-indigo-700 focus:ring focus:ring-indigo-300 focus:ring-opacity-50 p-2">
                 </div>
                 <div>
                     <label for="emailAddress" class="block text-sm font-medium text-gray-700">Email Address</label>
-                    <input type="email" id="emailAddress" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2">
+                    <input type="email" id="emailAddress" class="mt-1 block w-full rounded-md border-gray-600 shadow-sm focus:border-indigo-700 focus:ring focus:ring-indigo-300 focus:ring-opacity-50 p-2">
                 </div>
             </div>
         </div>
@@ -77,17 +83,17 @@
                     <div class="grid grid-cols-1 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Site Name</label>
-                            <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 site-name">
+                            <input type="text" class="mt-1 block w-full rounded-md border-gray-600 shadow-sm p-2 site-name">
                         </div>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Area size in m²</label>
-                            <input type="number" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 area-size">
+                            <input type="number" class="mt-1 block w-full rounded-md border-gray-600 shadow-sm p-2 area-size">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Relevant system required</label>
-                            <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 system-required">
+                            <input type="text" class="mt-1 block w-full rounded-md border-gray-600 shadow-sm p-2 system-required">
                         </div>
                         <div class="md:col-span-2">
                             <label class="block text-sm font-medium text-gray-700">Upload Photo</label>
@@ -127,7 +133,7 @@
 
                 <div id="colorInputContainer" class="hidden">
                     <label for="rubberColor" class="block text-sm font-medium text-gray-700">Color (if colored rubber is chosen):</label>
-                    <input type="text" id="rubberColor" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2">
+                    <input type="text" id="rubberColor" class="mt-1 block w-full rounded-md border-gray-600 shadow-sm p-2">
                 </div>
 
                 <!-- Tickboxes -->
@@ -148,7 +154,7 @@
                 <!-- Current Condition -->
                 <div>
                     <label class="text-sm font-medium text-gray-700 mb-2 block">Current condition of the area:</label>
-                    <input type="text" id="currentCondition" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2">
+                    <input type="text" id="currentCondition" class="mt-1 block w-full rounded-md border-gray-600 shadow-sm p-2">
                 </div>
             </div>
         </div>
@@ -280,17 +286,17 @@
                     <div class="grid grid-cols-1 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Site Name</label>
-                            <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 site-name">
+                            <input type="text" class="mt-1 block w-full rounded-md border-gray-600 shadow-sm p-2 site-name">
                         </div>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Area size in m²</label>
-                            <input type="number" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 area-size">
+                            <input type="number" class="mt-1 block w-full rounded-md border-gray-600 shadow-sm p-2 area-size">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Relevant system required</label>
-                            <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 system-required">
+                            <input type="text" class="mt-1 block w-full rounded-md border-gray-600 shadow-sm p-2 system-required">
                         </div>
                         <div class="md:col-span-2">
                             <label class="block text-sm font-medium text-gray-700">Upload Photo</label>
@@ -314,6 +320,7 @@
             // Function to gather all form data
             const getFormData = async () => {
                 const formData = {};
+                formData.googleDriveLink = document.getElementById('googleDriveLink').value;
                 formData.companyName = document.getElementById('companyName').value;
                 formData.projectName = document.getElementById('projectName').value;
                 formData.siteLocation = document.getElementById('siteLocation').value;
@@ -386,6 +393,7 @@
                         
                         <div style="border-bottom: 1px solid #d1d5db; padding-bottom: 16px; margin-bottom: 16px;">
                             <h2 style="font-size: 24px; font-weight: 700; color: #374151; margin-bottom: 8px;">Client & Project Details</h2>
+                            ${data.googleDriveLink ? `<p style="font-size: 14px;"><strong>Google Drive Link:</strong> <a href="${data.googleDriveLink}" style="color: #4338ca; text-decoration: underline;">${data.googleDriveLink}</a></p>` : ''}
                             <p style="font-size: 14px;"><strong>Client Name:</strong> ${data.clientName || 'N/A'}</p>
                             <p style="font-size: 14px;"><strong>Contact Number:</strong> ${data.contactNumber || 'N/A'}</p>
                             <p style="font-size: 14px;"><strong>Email Address:</strong> ${data.emailAddress || 'N/A'}</p>
