@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RFQ & Quote Preparation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-6 md:p-8 flex justify-center">
+
+    <div id="form-container" class="bg-white rounded-xl shadow-xl w-full max-w-4xl p-6 sm:p-8 md:p-10">
+
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-extrabold text-indigo-700">
+                <span id="rfq-heading">RFQ</span>
+                <span id="project-heading" class="text-gray-800 ml-2"></span>
+            </h1>
+            <p class="mt-2 text-lg text-gray-500">Purpose: Gather all data required to prepare a detailed and accurate quote.</p>
+        </header>
+
+        <!-- Company Name and Project Info -->
+        <div class="mb-8 p-6 bg-gray-50 rounded-lg">
+            <h2 class="text-xl font-semibold mb-4 text-gray-700">Company & Project Information</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="companyName" class="block text-sm font-medium text-gray-700">Company Name</label>
+                    <input type="text" id="companyName" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2">
+                </div>
+                <div>
+                    <label for="projectName" class="block text-sm font-medium text-gray-700">Project Name</label>
+                    <input type="text" id="projectName" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2">
+                </div>
+                <div class="md:col-span-2">
+                    <label for="siteLocation" class="block text-sm font-medium text-gray-700">Site Location</label>
+                    <input type="text" id="siteLocation" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2">
+                </div>
+            </div>
+        </div>
+
+        <!-- Client Contact Info -->
+        <div class="mb-8 p-6 bg-gray-50 rounded-lg">
+            <h2 class="text-xl font-semibold mb-4 text-gray-700">Client Details</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                    <label for="clientName" class="block text-sm font-medium text-gray-700">Client Name</label>
+                    <input type="text" id="clientName" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2">
+                </div>
+                <div>
+                    <label for="contactNumber" class="block text-sm font-medium text-gray-700">Contact Number</label>
+                    <input type="tel" id="contactNumber" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2">
+                </div>
+                <div>
+                    <label for="emailAddress" class="block text-sm font-medium text-gray-700">Email Address</label>
+                    <input type="email" id="emailAddress" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2">
+                </div>
+            </div>
+        </div>
+
+        <!-- Dynamic Site Information Section -->
+        <div class="mb-8 p-6 bg-gray-50 rounded-lg">
+            <h2 class="text-xl font-semibold mb-4 text-gray-700">Site Surfacing Details</h2>
+            <div id="sites-container" class="space-y-6">
+                <!-- Initial site entry -->
+                <div class="site-entry p-4 border border-gray-200 rounded-lg bg-white">
+                    <h3 class="text-lg font-medium mb-4 text-gray-800">Site #1</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Area size in m²</label>
+                            <input type="number" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 area-size">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Relevant system required</label>
+                            <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 system-required">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button id="addSiteBtn" type="button" class="mt-4 w-full sm:w-auto px-4 py-2 bg-indigo-500 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                Add Another Site
+            </button>
+        </div>
+
+        <!-- Project Requirements Section -->
+        <div class="mb-8 p-6 bg-gray-50 rounded-lg">
+            <h2 class="text-xl font-semibold mb-4 text-gray-700">Project Requirements</h2>
+            <div class="space-y-6">
+                <!-- Surfacing Type Preference -->
+                <div>
+                    <label class="text-sm font-medium text-gray-700 mb-2 block">Surfacing type preference:</label>
+                    <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" id="blackRubber" class="form-checkbox text-indigo-600 rounded">
+                            <span class="ml-2 text-gray-600">Black rubber</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" id="coloredRubber" class="form-checkbox text-indigo-600 rounded">
+                            <span class="ml-2 text-gray-600">Coloured rubber</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" id="artificialTurf" class="form-checkbox text-indigo-600 rounded">
+                            <span class="ml-2 text-gray-600">Artificial turf</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="colorInputContainer" class="hidden">
+                    <label for="rubberColor" class="block text-sm font-medium text-gray-700">Color (if colored rubber is chosen):</label>
+                    <input type="text" id="rubberColor" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2">
+                </div>
+
+                <!-- Tickboxes -->
+                <div>
+                    <label class="text-sm font-medium text-gray-700 mb-2 block">Customizations and Plans:</label>
+                    <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" id="customPatterns" class="form-checkbox text-indigo-600 rounded">
+                            <span class="ml-2 text-gray-600">Custom patterns?</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" id="sitePlans" class="form-checkbox text-indigo-600 rounded">
+                            <span class="ml-2 text-gray-600">Site plans or schematics available?</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Current Condition -->
+                <div>
+                    <label class="text-sm font-medium text-gray-700 mb-2 block">Current condition of the area:</label>
+                    <select id="currentCondition" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2">
+                        <option value="Bare ground">Bare ground</option>
+                        <option value="Tiles">Tiles</option>
+                        <option value="Old surfacing">Old surfacing</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scoping Questions Section -->
+        <div class="mb-8 p-6 bg-gray-50 rounded-lg">
+            <h2 class="text-xl font-semibold mb-4 text-gray-700">Scoping Questions</h2>
+            <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <label class="text-sm font-medium text-gray-700">Will existing surfacing need removal?</label>
+                    <div class="space-x-4">
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="removal" value="Yes" class="form-radio text-indigo-600">
+                            <span class="ml-1 text-gray-600">Yes</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="removal" value="No" class="form-radio text-indigo-600" checked>
+                            <span class="ml-1 text-gray-600">No</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between">
+                    <label class="text-sm font-medium text-gray-700">Should Playground Creations allow for base prep (e.g., G5 or concrete)?</label>
+                    <div class="space-x-4">
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="basePrep" value="Yes" class="form-radio text-indigo-600">
+                            <span class="ml-1 text-gray-600">Yes</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="basePrep" value="No" class="form-radio text-indigo-600" checked>
+                            <span class="ml-1 text-gray-600">No</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between">
+                    <label class="text-sm font-medium text-gray-700">Should we include perimeter containment (curbing, borders)?</label>
+                    <div class="space-x-4">
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="containment" value="Yes" class="form-radio text-indigo-600">
+                            <span class="ml-1 text-gray-600">Yes</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="containment" value="No" class="form-radio text-indigo-600" checked>
+                            <span class="ml-1 text-gray-600">No</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between">
+                    <label class="text-sm font-medium text-gray-700">Is there any travel required?</label>
+                    <div class="space-x-4">
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="travel" value="Yes" class="form-radio text-indigo-600">
+                            <span class="ml-1 text-gray-600">Yes</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="travel" value="No" class="form-radio text-indigo-600" checked>
+                            <span class="ml-1 text-gray-600">No</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button id="generatePdfBtn" class="w-full px-6 py-3 bg-indigo-700 text-white font-bold text-lg rounded-lg shadow-xl hover:bg-indigo-800 transition ease-in-out duration-150">
+            Generate PDF for Costing
+        </button>
+    </div>
+
+    <!-- Hidden div to hold content for PDF generation -->
+    <div id="pdf-content" class="hidden"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const addSiteBtn = document.getElementById('addSiteBtn');
+            const sitesContainer = document.getElementById('sites-container');
+            const generatePdfBtn = document.getElementById('generatePdfBtn');
+            const pdfContent = document.getElementById('pdf-content');
+            const projectNameInput = document.getElementById('projectName');
+            const projectHeading = document.getElementById('project-heading');
+            const coloredRubberCheckbox = document.getElementById('coloredRubber');
+            const colorInputContainer = document.getElementById('colorInputContainer');
+            let siteCount = 1;
+
+            // Update the project name heading dynamically
+            projectNameInput.addEventListener('input', () => {
+                projectHeading.textContent = projectNameInput.value ? `| ${projectNameInput.value}` : '';
+            });
+
+            // Show/hide the color input based on the checkbox state
+            coloredRubberCheckbox.addEventListener('change', () => {
+                if (coloredRubberCheckbox.checked) {
+                    colorInputContainer.classList.remove('hidden');
+                } else {
+                    colorInputContainer.classList.add('hidden');
+                    document.getElementById('rubberColor').value = '';
+                }
+            });
+
+            // Function to add a new site entry to the form
+            addSiteBtn.addEventListener('click', () => {
+                siteCount++;
+                const newSiteEntry = document.createElement('div');
+                newSiteEntry.classList.add('site-entry', 'p-4', 'border', 'border-gray-200', 'rounded-lg', 'bg-white');
+                newSiteEntry.innerHTML = `
+                    <h3 class="text-lg font-medium mb-4 text-gray-800">Site #${siteCount}</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Area size in m²</label>
+                            <input type="number" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 area-size">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Relevant system required</label>
+                            <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 system-required">
+                        </div>
+                    </div>
+                `;
+                sitesContainer.appendChild(newSiteEntry);
+            });
+
+            // Function to gather all form data
+            const getFormData = () => {
+                const formData = {};
+                formData.companyName = document.getElementById('companyName').value;
+                formData.projectName = document.getElementById('projectName').value;
+                formData.siteLocation = document.getElementById('siteLocation').value;
+                formData.clientName = document.getElementById('clientName').value;
+                formData.contactNumber = document.getElementById('contactNumber').value;
+                formData.emailAddress = document.getElementById('emailAddress').value;
+                
+                formData.sites = [];
+                document.querySelectorAll('.site-entry').forEach((siteEntry) => {
+                    const areaSize = siteEntry.querySelector('.area-size').value;
+                    const systemRequired = siteEntry.querySelector('.system-required').value;
+                    if (areaSize || systemRequired) {
+                        formData.sites.push({ areaSize, systemRequired });
+                    }
+                });
+
+                formData.surfacingType = [];
+                if (document.getElementById('blackRubber').checked) {
+                    formData.surfacingType.push('Black rubber');
+                }
+                if (document.getElementById('coloredRubber').checked) {
+                    formData.surfacingType.push('Coloured rubber');
+                }
+                if (document.getElementById('artificialTurf').checked) {
+                    formData.surfacingType.push('Artificial turf');
+                }
+
+                formData.surfacingColor = document.getElementById('rubberColor').value;
+                formData.customPatterns = document.getElementById('customPatterns').checked ? 'Yes' : 'No';
+                formData.sitePlans = document.getElementById('sitePlans').checked ? 'Yes' : 'No';
+                formData.currentCondition = document.getElementById('currentCondition').value;
+                formData.removal = document.querySelector('input[name="removal"]:checked').value;
+                formData.basePrep = document.querySelector('input[name="basePrep"]:checked').value;
+                formData.containment = document.querySelector('input[name="containment"]:checked').value;
+                formData.travel = document.querySelector('input[name="travel"]:checked').value;
+
+                return formData;
+            };
+
+            // Function to create the PDF from a hidden HTML template
+            generatePdfBtn.addEventListener('click', () => {
+                generatePdfBtn.disabled = true;
+                generatePdfBtn.textContent = 'Generating PDF...';
+
+                const data = getFormData();
+                
+                // Clear and populate the PDF content div
+                pdfContent.innerHTML = '';
+                pdfContent.classList.remove('hidden');
+
+                const html = `
+                    <div style="width: 794px; padding: 40px; font-family: 'Inter', sans-serif; box-sizing: border-box;">
+                        <h1 style="font-size: 32px; font-weight: 800; color: #4338ca; margin-bottom: 8px;">RFQ: ${data.companyName} | ${data.projectName}</h1>
+                        <p style="font-size: 18px; color: #6b7280; margin-bottom: 32px;">Quote Preparation Sheet</p>
+                        
+                        <div style="border-bottom: 1px solid #d1d5db; padding-bottom: 16px; margin-bottom: 16px;">
+                            <h2 style="font-size: 24px; font-weight: 700; color: #374151; margin-bottom: 8px;">Client & Project Details</h2>
+                            <p style="font-size: 14px;"><strong>Client Name:</strong> ${data.clientName || 'N/A'}</p>
+                            <p style="font-size: 14px;"><strong>Contact Number:</strong> ${data.contactNumber || 'N/A'}</p>
+                            <p style="font-size: 14px;"><strong>Email Address:</strong> ${data.emailAddress || 'N/A'}</p>
+                            <p style="font-size: 14px;"><strong>Project Name:</strong> ${data.projectName || 'N/A'}</p>
+                            <p style="font-size: 14px;"><strong>Site Location:</strong> ${data.siteLocation || 'N/A'}</p>
+                        </div>
+                        
+                        <div style="border-bottom: 1px solid #d1d5db; padding-bottom: 16px; margin-bottom: 16px;">
+                            <h2 style="font-size: 24px; font-weight: 700; color: #374151; margin-bottom: 8px;">Surfacing Details</h2>
+                            ${data.sites.map((site, index) => `
+                                <div style="margin-bottom: 16px;">
+                                    <h3 style="font-size: 18px; font-weight: 600; color: #1f2937;">Site #${index + 1}</h3>
+                                    <p style="font-size: 14px;"><strong>Area Size:</strong> ${site.areaSize || 'N/A'} m²</p>
+                                    <p style="font-size: 14px;"><strong>System Required:</strong> ${site.systemRequired || 'N/A'}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <div style="border-bottom: 1px solid #d1d5db; padding-bottom: 16px; margin-bottom: 16px;">
+                            <h2 style="font-size: 24px; font-weight: 700; color: #374151; margin-bottom: 8px;">Project Requirements</h2>
+                            <p style="font-size: 14px;"><strong>Surfacing Type Preference:</strong> ${data.surfacingType.join(', ') || 'N/A'}</p>
+                            ${data.surfacingColor ? `<p style="font-size: 14px;"><strong>Surfacing Color:</strong> ${data.surfacingColor}</p>` : ''}
+                            <p style="font-size: 14px;"><strong>Custom Patterns?:</strong> ${data.customPatterns}</p>
+                            <p style="font-size: 14px;"><strong>Site Plans/Schematics Available:</strong> ${data.sitePlans}</p>
+                            <p style="font-size: 14px;"><strong>Current Area Condition:</strong> ${data.currentCondition}</p>
+                        </div>
+
+                        <div style="padding-bottom: 16px;">
+                            <h2 style="font-size: 24px; font-weight: 700; color: #374151; margin-bottom: 8px;">Scoping Questions</h2>
+                            <p style="font-size: 14px;"><strong>Existing Surfacing Removal:</strong> ${data.removal}</p>
+                            <p style="font-size: 14px;"><strong>Base Prep Included:</strong> ${data.basePrep}</p>
+                            <p style="font-size: 14px;"><strong>Perimeter Containment Included:</strong> ${data.containment}</p>
+                            <p style="font-size: 14px;"><strong>Travel Required:</strong> ${data.travel}</p>
+                        </div>
+                    </div>
+                `;
+
+                pdfContent.innerHTML = html;
+
+                // Use html2canvas to render the content div to an image
+                html2canvas(pdfContent, {
+                    scale: 2,
+                    useCORS: true,
+                    allowTaint: true,
+                    logging: true,
+                    scrollY: -window.scrollY // Fixes an issue with page scrolling
+                }).then(canvas => {
+                    // Create a new jsPDF document
+                    const { jsPDF } = window.jspdf;
+                    const imgData = canvas.toDataURL('image/png');
+                    const pdf = new jsPDF('p', 'mm', 'a4');
+                    const imgWidth = 210; 
+                    const imgHeight = canvas.height * imgWidth / canvas.width;
+                    
+                    pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+
+                    // Save the PDF
+                    pdf.save('RFQ_Quote_Sheet.pdf');
+
+                    // Reset button and hide PDF content
+                    generatePdfBtn.disabled = false;
+                    generatePdfBtn.textContent = 'Generate PDF for Costing';
+                    pdfContent.classList.add('hidden');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
