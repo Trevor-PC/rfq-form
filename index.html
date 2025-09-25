@@ -19,7 +19,7 @@
     <div id="form-container" class="bg-white rounded-xl shadow-xl w-full max-w-4xl p-6 sm:p-8 md:p-10">
 
         <header class="text-center mb-8">
-            <h1 class="text-4xl font-extrabold text-indigo-700">
+            <h1 class="text-4xl font-extrabold text-blue-600 underline">
                 <span id="rfq-heading">RFQ</span>
                 <span id="project-heading" class="text-gray-800 ml-2"></span>
             </h1>
@@ -33,7 +33,7 @@
 
         <!-- Company Name and Project Info -->
         <div class="mb-8 p-6 bg-gray-50 rounded-lg">
-            <h2 class="text-xl font-semibold mb-4 text-gray-700">Company & Project Information</h2>
+            <h2 class="text-xl font-semibold mb-4 text-blue-600 underline">Company & Project Information</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label for="companyName" class="block text-sm font-medium text-gray-700">Company Name</label>
@@ -52,7 +52,7 @@
 
         <!-- Client Contact Info -->
         <div class="mb-8 p-6 bg-gray-50 rounded-lg">
-            <h2 class="text-xl font-semibold mb-4 text-gray-700">Client Details</h2>
+            <h2 class="text-xl font-semibold mb-4 text-blue-600 underline">Client Details</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
                     <label for="clientName" class="block text-sm font-medium text-gray-700">Client Name</label>
@@ -71,7 +71,7 @@
 
         <!-- Dynamic Site Information Section -->
         <div class="mb-8 p-6 bg-gray-50 rounded-lg">
-            <h2 class="text-xl font-semibold mb-4 text-gray-700">Site Surfacing Details</h2>
+            <h2 class="text-xl font-semibold mb-4 text-blue-600 underline">Site Surfacing Details</h2>
             <div id="sites-container" class="space-y-6">
                 <!-- Initial site entry -->
                 <div class="site-entry p-4 border border-gray-200 rounded-lg bg-white">
@@ -104,7 +104,7 @@
 
         <!-- Project Questions and Requirements Section -->
         <div class="mb-8 p-6 bg-gray-50 rounded-lg">
-            <h2 class="text-xl font-semibold mb-4 text-gray-700">Project Questions and Requirements</h2>
+            <h2 class="text-xl font-semibold mb-4 text-blue-600 underline">Project Questions and Requirements</h2>
             <div class="space-y-6">
                 <!-- Surfacing Type Preference -->
                 <div>
@@ -257,7 +257,7 @@
                 newSiteEntry.classList.add('site-entry', 'p-4', 'border', 'border-gray-200', 'rounded-lg', 'bg-white');
                 newSiteEntry.innerHTML = `
                     <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-medium text-gray-800">Site #${siteCount}</h3>
+                        <h3 class="text-lg font-medium text-gray-800">Site #1</h3>
                         <button type="button" class="text-sm font-medium text-red-600 hover:text-red-800 transition remove-site-btn">Remove</button>
                     </div>
                     <div class="grid grid-cols-1 gap-4">
@@ -341,6 +341,9 @@
                 generatePdfBtn.textContent = 'Generating PDF...';
 
                 const data = await getFormData();
+                const now = new Date();
+                const dateString = now.toLocaleDateString();
+                const timeString = now.toLocaleTimeString();
                 
                 // Clear and populate the PDF content div
                 pdfContent.innerHTML = '';
@@ -348,11 +351,12 @@
 
                 const html = `
                     <div style="padding: 40px; font-family: 'Inter', sans-serif; box-sizing: border-box; width: 794px;">
-                        <h1 style="font-size: 32px; font-weight: 800; color: #4338ca; margin-bottom: 8px;">RFQ: ${data.companyName} | ${data.projectName}</h1>
-                        <p style="font-size: 18px; color: #6b7280; margin-bottom: 32px;">Quote Preparation Sheet</p>
+                        <h1 style="font-size: 32px; font-weight: 800; color: #4338ca; text-decoration: underline; margin-bottom: 8px;">RFQ: ${data.companyName} | ${data.projectName}</h1>
+                        <p style="font-size: 18px; color: #6b7280; margin-bottom: 8px;">Quote Preparation Sheet</p>
+                        <p style="font-size: 14px; color: #6b7280; margin-bottom: 32px;"><strong>Generated:</strong> ${dateString} at ${timeString}</p>
                         
                         <div style="border-bottom: 1px solid #d1d5db; padding-bottom: 16px; margin-bottom: 16px;">
-                            <h2 style="font-size: 24px; font-weight: 700; color: #374151; margin-bottom: 8px;">Client & Project Details</h2>
+                            <h2 style="font-size: 24px; font-weight: 700; color: #374151; text-decoration: underline; margin-bottom: 8px;">Client & Project Details</h2>
                             ${data.googleDriveLink ? `<p style="font-size: 14px;"><strong>Google Drive Link:</strong> <a href="${data.googleDriveLink}" style="color: #4338ca; text-decoration: underline;">${data.googleDriveLink}</a></p>` : ''}
                             <p style="font-size: 14px;"><strong>Client Name:</strong> ${data.clientName || 'N/A'}</p>
                             <p style="font-size: 14px;"><strong>Contact Number:</strong> ${data.contactNumber || 'N/A'}</p>
@@ -362,7 +366,7 @@
                         </div>
                         
                         <div style="border-bottom: 1px solid #d1d5db; padding-bottom: 16px; margin-bottom: 16px;">
-                            <h2 style="font-size: 24px; font-weight: 700; color: #374151; margin-bottom: 8px;">Surfacing Details</h2>
+                            <h2 style="font-size: 24px; font-weight: 700; color: #374151; text-decoration: underline; margin-bottom: 8px;">Surfacing Details</h2>
                             ${data.sites.map((site, index) => `
                                 <div style="margin-bottom: 16px;">
                                     <h3 style="font-size: 18px; font-weight: 600; color: #1f2937;">${site.siteName || `Site #${index + 1}`}</h3>
@@ -373,7 +377,7 @@
                         </div>
 
                         <div style="padding-bottom: 16px;">
-                            <h2 style="font-size: 24px; font-weight: 700; color: #374151; margin-bottom: 8px;">Project Questions and Requirements</h2>
+                            <h2 style="font-size: 24px; font-weight: 700; color: #374151; text-decoration: underline; margin-bottom: 8px;">Project Questions and Requirements</h2>
                             <p style="font-size: 14px;"><strong>Surfacing Type Preference:</strong> ${data.surfacingType.join(', ') || 'N/A'}</p>
                             ${data.surfacingColor ? `<p style="font-size: 14px;"><strong>Surfacing Color:</strong> ${data.surfacingColor}</p>` : ''}
                             <p style="font-size: 14px;"><strong>Preferred Installation Date:</strong> ${data.preferredDate || 'N/A'}</p>
