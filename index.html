@@ -344,6 +344,10 @@
                 const now = new Date();
                 const dateString = now.toLocaleDateString();
                 const timeString = now.toLocaleTimeString();
+
+                // Get the project name and sanitize it for the filename
+                const projectName = data.projectName.trim();
+                const filename = projectName ? `${projectName.replace(/[^a-zA-Z0-9 ]/g, '').replace(/ /g, '_')}_RFQ.pdf` : 'RFQ_Quote_Sheet.pdf';
                 
                 // Clear and populate the PDF content div
                 pdfContent.innerHTML = '';
@@ -412,7 +416,7 @@
                     pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
 
                     // Save the PDF
-                    pdf.save('RFQ_Quote_Sheet.pdf');
+                    pdf.save(filename);
 
                     // Reset button and hide PDF content
                     generatePdfBtn.disabled = false;
