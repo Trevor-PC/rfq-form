@@ -355,12 +355,12 @@
 
                 const html = `
                     <div style="padding: 40px; font-family: 'Inter', sans-serif; box-sizing: border-box; width: 794px;">
-                        <h1 style="font-size: 32px; font-weight: 800; color: #4338ca; text-decoration: underline; margin-bottom: 8px;">RFQ: ${data.companyName} | ${data.projectName}</h1>
+                        <h1 style="font-size: 32px; font-weight: 800; color: #4338ca; margin-bottom: 8px;">RFQ: ${data.companyName} | ${data.projectName}</h1>
                         <p style="font-size: 18px; color: #6b7280; margin-bottom: 8px;">Quote Preparation Sheet</p>
                         <p style="font-size: 14px; color: #6b7280; margin-bottom: 32px;"><strong>Generated:</strong> ${dateString} at ${timeString}</p>
                         
                         <div style="border-bottom: 1px solid #d1d5db; padding-bottom: 16px; margin-bottom: 16px;">
-                            <h2 style="font-size: 24px; font-weight: 700; color: #374151; text-decoration: underline; margin-bottom: 8px;">Client & Project Details</h2>
+                            <h2 style="font-size: 24px; font-weight: 700; color: #4338ca; margin-bottom: 8px;">Client & Project Details</h2>
                             ${data.googleDriveLink ? `<p style="font-size: 14px;"><strong>Google Drive Link:</strong> <a href="${data.googleDriveLink}" style="color: #4338ca; text-decoration: underline;">${data.googleDriveLink}</a></p>` : ''}
                             <p style="font-size: 14px;"><strong>Client Name:</strong> ${data.clientName || 'N/A'}</p>
                             <p style="font-size: 14px;"><strong>Contact Number:</strong> ${data.contactNumber || 'N/A'}</p>
@@ -370,7 +370,7 @@
                         </div>
                         
                         <div style="border-bottom: 1px solid #d1d5db; padding-bottom: 16px; margin-bottom: 16px;">
-                            <h2 style="font-size: 24px; font-weight: 700; color: #374151; text-decoration: underline; margin-bottom: 8px;">Surfacing Details</h2>
+                            <h2 style="font-size: 24px; font-weight: 700; color: #4338ca; margin-bottom: 8px;">Surfacing Details</h2>
                             ${data.sites.map((site, index) => `
                                 <div style="margin-bottom: 16px;">
                                     <h3 style="font-size: 18px; font-weight: 600; color: #1f2937;">${site.siteName || `Site #${index + 1}`}</h3>
@@ -381,7 +381,7 @@
                         </div>
 
                         <div style="padding-bottom: 16px;">
-                            <h2 style="font-size: 24px; font-weight: 700; color: #374151; text-decoration: underline; margin-bottom: 8px;">Project Questions and Requirements</h2>
+                            <h2 style="font-size: 24px; font-weight: 700; color: #4338ca; margin-bottom: 8px;">Project Questions and Requirements</h2>
                             <p style="font-size: 14px;"><strong>Surfacing Type Preference:</strong> ${data.surfacingType.join(', ') || 'N/A'}</p>
                             ${data.surfacingColor ? `<p style="font-size: 14px;"><strong>Surfacing Color:</strong> ${data.surfacingColor}</p>` : ''}
                             <p style="font-size: 14px;"><strong>Preferred Installation Date:</strong> ${data.preferredDate || 'N/A'}</p>
