@@ -95,6 +95,29 @@
                             <input type="text" class="mt-1 block w-full rounded-md border border-gray-400 bg-gray-100 shadow-sm p-2 system-required">
                         </div>
                     </div>
+                     <!-- Surfacing Type Preference -->
+                    <div class="mt-4">
+                        <label class="text-sm font-medium text-gray-700 mb-2 block">Surfacing type preference:</label>
+                        <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" id="blackRubber_1" class="form-checkbox text-indigo-600 rounded">
+                                <span class="ml-2 text-gray-600">Black rubber</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" id="coloredRubber_1" class="form-checkbox text-indigo-600 rounded colored-rubber-checkbox">
+                                <span class="ml-2 text-gray-600">Coloured rubber</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" id="artificialTurf_1" class="form-checkbox text-indigo-600 rounded">
+                                <span class="ml-2 text-gray-600">Artificial turf</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div id="colorInputContainer_1" class="hidden mt-4 color-input-container">
+                        <label for="rubberColor_1" class="block text-sm font-medium text-gray-700">Color (if colored rubber is chosen):</label>
+                        <input type="text" id="rubberColor_1" class="mt-1 block w-full rounded-md border border-gray-400 bg-gray-100 shadow-sm p-2 rubber-color-input">
+                    </div>
                 </div>
             </div>
             <button id="addSiteBtn" type="button" class="mt-4 w-full sm:w-auto px-4 py-2 bg-indigo-500 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
@@ -106,30 +129,6 @@
         <div class="mb-8 p-6 bg-gray-50 rounded-lg">
             <h2 class="text-xl font-semibold mb-4 text-blue-600 underline">Project Questions and Requirements</h2>
             <div class="space-y-6">
-                <!-- Surfacing Type Preference -->
-                <div>
-                    <label class="text-sm font-medium text-gray-700 mb-2 block">Surfacing type preference:</label>
-                    <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
-                        <label class="inline-flex items-center">
-                            <input type="checkbox" id="blackRubber" class="form-checkbox text-indigo-600 rounded">
-                            <span class="ml-2 text-gray-600">Black rubber</span>
-                        </label>
-                        <label class="inline-flex items-center">
-                            <input type="checkbox" id="coloredRubber" class="form-checkbox text-indigo-600 rounded">
-                            <span class="ml-2 text-gray-600">Coloured rubber</span>
-                        </label>
-                        <label class="inline-flex items-center">
-                            <input type="checkbox" id="artificialTurf" class="form-checkbox text-indigo-600 rounded">
-                            <span class="ml-2 text-gray-600">Artificial turf</span>
-                        </label>
-                    </div>
-                </div>
-
-                <div id="colorInputContainer" class="hidden">
-                    <label for="rubberColor" class="block text-sm font-medium text-gray-700">Color (if colored rubber is chosen):</label>
-                    <input type="text" id="rubberColor" class="mt-1 block w-full rounded-md border border-gray-400 bg-gray-100 shadow-sm p-2">
-                </div>
-
                 <!-- New Preferred Installation Date Field -->
                 <div>
                     <label for="preferredDate" class="block text-sm font-medium text-gray-700">Preferred installation date:</label>
@@ -231,8 +230,6 @@
             const pdfContent = document.getElementById('pdf-content');
             const projectNameInput = document.getElementById('projectName');
             const projectHeading = document.getElementById('project-heading');
-            const coloredRubberCheckbox = document.getElementById('coloredRubber');
-            const colorInputContainer = document.getElementById('colorInputContainer');
             let siteCount = 1;
 
             // Update the project name heading dynamically
@@ -240,13 +237,18 @@
                 projectHeading.textContent = projectNameInput.value ? `| ${projectNameInput.value}` : '';
             });
 
-            // Show/hide the color input based on the checkbox state
-            coloredRubberCheckbox.addEventListener('change', () => {
-                if (coloredRubberCheckbox.checked) {
-                    colorInputContainer.classList.remove('hidden');
-                } else {
-                    colorInputContainer.classList.add('hidden');
-                    document.getElementById('rubberColor').value = '';
+            // Event delegation for showing/hiding color input
+            sitesContainer.addEventListener('change', (event) => {
+                const target = event.target;
+                if (target.matches('.colored-rubber-checkbox')) {
+                    const siteEntry = target.closest('.site-entry');
+                    const colorInputContainer = siteEntry.querySelector('.color-input-container');
+                    if (target.checked) {
+                        colorInputContainer.classList.remove('hidden');
+                    } else {
+                        colorInputContainer.classList.add('hidden');
+                        colorInputContainer.querySelector('input').value = '';
+                    }
                 }
             });
 
@@ -257,7 +259,7 @@
                 newSiteEntry.classList.add('site-entry', 'p-4', 'border', 'border-gray-200', 'rounded-lg', 'bg-white');
                 newSiteEntry.innerHTML = `
                     <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-medium text-gray-800">Site #1</h3>
+                        <h3 class="text-lg font-medium text-gray-800">Site #${siteCount}</h3>
                         <button type="button" class="text-sm font-medium text-red-600 hover:text-red-800 transition remove-site-btn">Remove</button>
                     </div>
                     <div class="grid grid-cols-1 gap-4">
@@ -275,6 +277,27 @@
                             <label class="block text-sm font-medium text-gray-700">Relevant system required</label>
                             <input type="text" class="mt-1 block w-full rounded-md border border-gray-400 bg-gray-100 shadow-sm p-2 system-required">
                         </div>
+                    </div>
+                    <div class="mt-4">
+                        <label class="text-sm font-medium text-gray-700 mb-2 block">Surfacing type preference:</label>
+                        <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" id="blackRubber_${siteCount}" class="form-checkbox text-indigo-600 rounded">
+                                <span class="ml-2 text-gray-600">Black rubber</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" id="coloredRubber_${siteCount}" class="form-checkbox text-indigo-600 rounded colored-rubber-checkbox">
+                                <span class="ml-2 text-gray-600">Coloured rubber</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" id="artificialTurf_${siteCount}" class="form-checkbox text-indigo-600 rounded">
+                                <span class="ml-2 text-gray-600">Artificial turf</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div id="colorInputContainer_${siteCount}" class="hidden mt-4 color-input-container">
+                        <label for="rubberColor_${siteCount}" class="block text-sm font-medium text-gray-700">Color (if colored rubber is chosen):</label>
+                        <input type="text" id="rubberColor_${siteCount}" class="mt-1 block w-full rounded-md border border-gray-400 bg-gray-100 shadow-sm p-2 rubber-color-input">
                     </div>
                 `;
                 sitesContainer.appendChild(newSiteEntry);
@@ -298,31 +321,36 @@
                 formData.contactNumber = document.getElementById('contactNumber').value;
                 formData.emailAddress = document.getElementById('emailAddress').value;
                 
-                formData.sites = Array.from(document.querySelectorAll('.site-entry')).map((siteEntry) => {
+                formData.sites = Array.from(document.querySelectorAll('.site-entry')).map((siteEntry, index) => {
                     const siteName = siteEntry.querySelector('.site-name').value;
                     const areaSize = siteEntry.querySelector('.area-size').value;
                     const systemRequired = siteEntry.querySelector('.system-required').value;
                     
-                    if (siteName || areaSize || systemRequired) {
-                        return { siteName, areaSize, systemRequired };
+                    const surfacingType = [];
+                    const blackRubberCheckbox = siteEntry.querySelector(`input[id^="blackRubber_"]`);
+                    const coloredRubberCheckbox = siteEntry.querySelector(`input[id^="coloredRubber_"]`);
+                    const artificialTurfCheckbox = siteEntry.querySelector(`input[id^="artificialTurf_"]`);
+
+                    if (blackRubberCheckbox.checked) {
+                        surfacingType.push('Black rubber');
+                    }
+                    if (coloredRubberCheckbox.checked) {
+                        surfacingType.push('Coloured rubber');
+                    }
+                    if (artificialTurfCheckbox.checked) {
+                        surfacingType.push('Artificial turf');
+                    }
+
+                    const surfacingColor = siteEntry.querySelector(`input[id^="rubberColor_"]`).value;
+                    
+                    if (siteName || areaSize || systemRequired || surfacingType.length > 0 || surfacingColor) {
+                        return { siteName, areaSize, systemRequired, surfacingType, surfacingColor };
                     }
                     return null;
                 });
 
                 formData.sites = formData.sites.filter(site => site !== null);
 
-                formData.surfacingType = [];
-                if (document.getElementById('blackRubber').checked) {
-                    formData.surfacingType.push('Black rubber');
-                }
-                if (document.getElementById('coloredRubber').checked) {
-                    formData.surfacingType.push('Coloured rubber');
-                }
-                if (document.getElementById('artificialTurf').checked) {
-                    formData.surfacingType.push('Artificial turf');
-                }
-
-                formData.surfacingColor = document.getElementById('rubberColor').value;
                 formData.preferredDate = document.getElementById('preferredDate').value;
                 formData.customPatterns = document.getElementById('customPatterns').checked ? 'Yes' : 'No';
                 formData.sitePlans = document.getElementById('sitePlans').checked ? 'Yes' : 'No';
@@ -376,14 +404,14 @@
                                     <h3 style="font-size: 18px; font-weight: 600; color: #1f2937;">${site.siteName || `Site #${index + 1}`}</h3>
                                     <p style="font-size: 14px;"><strong>Area Size:</strong> ${site.areaSize || 'N/A'} m²</p>
                                     <p style="font-size: 14px;"><strong>System Required:</strong> ${site.systemRequired || 'N/A'}</p>
+                                    <p style="font-size: 14px;"><strong>Surfacing Type Preference:</strong> ${site.surfacingType.join(', ') || 'N/A'}</p>
+                                    ${site.surfacingColor ? `<p style="font-size: 14px;"><strong>Surfacing Color:</strong> ${site.surfacingColor}</p>` : ''}
                                 </div>
                             `).join('')}
                         </div>
 
                         <div style="padding-bottom: 16px;">
                             <h2 style="font-size: 24px; font-weight: 700; color: #4338ca; margin-bottom: 8px;">Project Questions and Requirements</h2>
-                            <p style="font-size: 14px;"><strong>Surfacing Type Preference:</strong> ${data.surfacingType.join(', ') || 'N/A'}</p>
-                            ${data.surfacingColor ? `<p style="font-size: 14px;"><strong>Surfacing Color:</strong> ${data.surfacingColor}</p>` : ''}
                             <p style="font-size: 14px;"><strong>Preferred Installation Date:</strong> ${data.preferredDate || 'N/A'}</p>
                             <p style="font-size: 14px;"><strong>Custom Patterns?:</strong> ${data.customPatterns}</p>
                             <p style="font-size: 14px;"><strong>Site Plans/Schematics Available:</strong> ${data.sitePlans}</p>
