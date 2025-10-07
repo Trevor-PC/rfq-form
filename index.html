@@ -3,456 +3,742 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RFQ & Quote Preparation</title>
+    <title>Playground Creations - Quoting Tool</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- PDF Generation Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
+        }
+        /* Custom styles for printing the quote */
+        @media print {
+            #quote-form, #quote-actions {
+                display: none;
+            }
+            .container {
+                padding: 0;
+                margin: 0;
+                max-width: 100%;
+            }
+            #quote-output-container {
+                margin-top: 0;
+            }
+            #quote-output {
+                box-shadow: none;
+                border: none;
+            }
+        }
+        .input-group {
+            margin-bottom: 1rem;
+        }
+        .input-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #4A5568; /* gray-700 */
+        }
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #E2E8F0; /* gray-300 */
+            border-radius: 0.5rem;
+            transition: border-color 0.2s;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #3B82F6; /* blue-500 */
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+        .area-card {
+            background-color: #F9FAFB; /* gray-50 */
+            border: 1px solid #E5E7EB; /* gray-200 */
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-top: 1rem;
+            position: relative;
+        }
+        .remove-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: #FEE2E2; /* red-100 */
+            color: #EF4444; /* red-500 */
+            border: none;
+            border-radius: 9999px;
+            width: 1.75rem;
+            height: 1.75rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .remove-btn:hover {
+            background-color: #FECACA; /* red-200 */
         }
     </style>
 </head>
-<body class="p-4 sm:p-6 md:p-8 flex justify-center">
+<body class="bg-gray-100 text-gray-800">
 
-    <div id="form-container" class="bg-white rounded-xl shadow-xl w-full max-w-4xl p-6 sm:p-8 md:p-10">
-
+    <div class="container mx-auto p-4 md:p-8 max-w-4xl">
+        <!-- Header -->
         <header class="text-center mb-8">
-            <h1 class="text-4xl font-extrabold text-blue-600 underline">
-                <span id="rfq-heading">RFQ</span>
-                <span id="project-heading" class="text-gray-800 ml-2"></span>
-            </h1>
+            <h1 class="text-3xl md:text-4xl font-bold text-blue-600">Playground Creations</h1>
+            <p class="text-lg text-gray-600">Impact Attenuation Safety Flooring Quote Generator</p>
         </header>
+
+        <main id="quote-form">
+            <!-- Section 1: Client and Site Details -->
+            <div class="bg-white p-6 rounded-xl shadow-md mb-6">
+                <h2 class="text-2xl font-semibold mb-4 border-b pb-2">Step 1: Client & Site Information</h2>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="input-group">
+                        <label for="clientName" class="input-label">Client Name</label>
+                        <input type="text" id="clientName" class="form-input" placeholder="e.g., ABC Primary School">
+                    </div>
+                    <div class="input-group">
+                        <label for="clientContact" class="input-label">Client Contact (Email/Phone)</label>
+                        <input type="text" id="clientContact" class="form-input" placeholder="e.g., principal@abc.com">
+                    </div>
+                    <div class="input-group md:col-span-2">
+                        <label for="siteLocation" class="input-label">Site Location / Address</label>
+                        <input type="text" id="siteLocation" class="form-input" placeholder="e.g., 123 Playground Ave, Cape Town">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Area Specifications -->
+            <div class="bg-white p-6 rounded-xl shadow-md mb-6">
+                <h2 class="text-2xl font-semibold mb-2">Step 2: Area & Flooring Details</h2>
+                <p class="text-gray-500 mb-4">Add each distinct area, specifying its size, required safety system, and color.</p>
+                <div id="areas-container">
+                    <!-- Dynamic area cards will be inserted here by JavaScript -->
+                </div>
+                <button id="add-area-btn" class="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">
+                    + Add Another Area
+                </button>
+            </div>
+
+            <!-- Section 3: Additional Costs -->
+            <div class="bg-white p-6 rounded-xl shadow-md mb-6">
+                <h2 class="text-2xl font-semibold mb-4 border-b pb-2">Step 3: Additional Costs</h2>
+                <div id="additional-costs-container" class="space-y-4">
+                    <!-- Dynamic cost rows will be inserted here by JavaScript -->
+                </div>
+                <button id="add-cost-btn" class="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">
+                    + Add Another Cost
+                </button>
+            </div>
+
+            <!-- Generate Quote Button -->
+            <div class="text-center">
+                 <button id="generate-quote-btn" class="w-full md:w-auto bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-12 rounded-lg text-lg transition-transform hover:scale-105">
+                    Generate Quote
+                </button>
+            </div>
+        </main>
         
-        <!-- Google Drive Link Field -->
-        <div class="mb-8 p-6 bg-gray-50 rounded-lg">
-            <label for="googleDriveLink" class="block text-sm font-medium text-gray-700">Google Drive Link</label>
-            <input type="url" id="googleDriveLink" class="mt-1 block w-full rounded-md border border-gray-400 bg-gray-100 shadow-sm focus:border-indigo-700 focus:ring focus:ring-indigo-300 focus:ring-opacity-50 p-2" placeholder="e.g., https://drive.google.com/drive/folders/...">
-        </div>
-
-        <!-- Company Name and Project Info -->
-        <div class="mb-8 p-6 bg-gray-50 rounded-lg">
-            <h2 class="text-xl font-semibold mb-4 text-blue-600 underline">Company & Project Information</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label for="companyName" class="block text-sm font-medium text-gray-700">Company Name</label>
-                    <input type="text" id="companyName" class="mt-1 block w-full rounded-md border border-gray-400 bg-gray-100 shadow-sm focus:border-indigo-700 focus:ring focus:ring-indigo-300 focus:ring-opacity-50 p-2">
-                </div>
-                <div>
-                    <label for="projectName" class="block text-sm font-medium text-gray-700">Project Name</label>
-                    <input type="text" id="projectName" class="mt-1 block w-full rounded-md border border-gray-400 bg-gray-100 shadow-sm focus:border-indigo-700 focus:ring focus:ring-indigo-300 focus:ring-opacity-50 p-2">
-                </div>
-                <div class="md:col-span-2">
-                    <label for="siteLocation" class="block text-sm font-medium text-gray-700">Site Location</label>
-                    <input type="text" id="siteLocation" class="mt-1 block w-full rounded-md border border-gray-400 bg-gray-100 shadow-sm focus:border-indigo-700 focus:ring focus:ring-indigo-300 focus:ring-opacity-50 p-2">
-                </div>
-            </div>
-        </div>
-
-        <!-- Client Contact Info -->
-        <div class="mb-8 p-6 bg-gray-50 rounded-lg">
-            <h2 class="text-xl font-semibold mb-4 text-blue-600 underline">Client Details</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div>
-                    <label for="clientName" class="block text-sm font-medium text-gray-700">Client Name</label>
-                    <input type="text" id="clientName" class="mt-1 block w-full rounded-md border border-gray-400 bg-gray-100 shadow-sm focus:border-indigo-700 focus:ring focus:ring-indigo-300 focus:ring-opacity-50 p-2">
-                </div>
-                <div>
-                    <label for="contactNumber" class="block text-sm font-medium text-gray-700">Contact Number</label>
-                    <input type="tel" id="contactNumber" class="mt-1 block w-full rounded-md border border-gray-400 bg-gray-100 shadow-sm focus:border-indigo-700 focus:ring focus:ring-indigo-300 focus:ring-opacity-50 p-2">
-                </div>
-                <div>
-                    <label for="emailAddress" class="block text-sm font-medium text-gray-700">Email Address</label>
-                    <input type="email" id="emailAddress" class="mt-1 block w-full rounded-md border border-gray-400 bg-gray-100 shadow-sm focus:border-indigo-700 focus:ring focus:ring-indigo-300 focus:ring-opacity-50 p-2">
-                </div>
-            </div>
-        </div>
-
-        <!-- Dynamic Site Information Section -->
-        <div class="mb-8 p-6 bg-gray-50 rounded-lg">
-            <h2 class="text-xl font-semibold mb-4 text-blue-600 underline">Site Surfacing Details</h2>
-            <div id="sites-container" class="space-y-6">
-                <!-- Initial site entry -->
-                <div class="site-entry p-4 border border-gray-200 rounded-lg bg-white">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-medium text-gray-800">Site #1</h3>
-                        <button type="button" class="text-sm font-medium text-red-600 hover:text-red-800 transition remove-site-btn">Remove</button>
+        <!-- Section 4: Generated Quote (hidden by default) -->
+        <div id="quote-output-container" class="hidden mt-8">
+            <div id="quote-output" class="bg-white p-8 rounded-xl shadow-lg border">
+                <!-- Quote Header -->
+                <div class="flex justify-between items-start border-b-2 pb-6 mb-6">
+                    <div>
+                        <h2 class="text-3xl font-bold text-blue-600">Playground Creations</h2>
+                        <p class="text-gray-500">Official Quotation</p>
                     </div>
-                    <div class="grid grid-cols-1 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Site Name</label>
-                            <input type="text" class="mt-1 block w-full rounded-md border border-gray-400 bg-gray-100 shadow-sm p-2 site-name">
+                    <div class="text-right">
+                        <p class="font-bold">Quote ID: <span id="quote-id"></span></p>
+                        <p class="text-gray-600">Date: <span id="quote-date"></span></p>
+                    </div>
+                </div>
+
+                <!-- Client and Company Info -->
+                <div class="grid md:grid-cols-2 gap-8 mb-8">
+                    <div>
+                        <h3 class="font-semibold text-gray-700 mb-2">Prepared For:</h3>
+                        <p id="quote-client-name" class="font-bold"></p>
+                        <p id="quote-client-contact"></p>
+                        <p id="quote-site-location"></p>
+                    </div>
+                    <div class="md:text-right">
+                        <h3 class="font-semibold text-gray-700 mb-2">Prepared By:</h3>
+                        <p class="font-bold">Playground Creations</p>
+                        <p>info@playgroundcreations.co.za</p>
+                        <p>Cape Town, Western Cape</p>
+                    </div>
+                </div>
+
+                <!-- Quote Items Table -->
+                <h3 class="font-semibold text-gray-700 mb-2">Project Scope Breakdown:</h3>
+                <table class="w-full mb-8">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="text-left font-semibold p-3">Item / Description</th>
+                            <th class="text-right font-semibold p-3">Qty m²</th>
+                            <th class="text-right font-semibold p-3">Unit Price (per m²)</th>
+                            <th class="text-right font-semibold p-3">Line Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="quote-items-body">
+                       <!-- Items will be injected here by JavaScript -->
+                    </tbody>
+                </table>
+                
+                <!-- Totals Section -->
+                <div class="flex justify-end">
+                    <div class="w-full md:w-1/2">
+                        <div class="flex justify-between py-2">
+                            <span class="font-semibold text-gray-600">Subtotal:</span>
+                            <span id="quote-subtotal"></span>
+                        </div>
+                         <div class="flex justify-between py-2">
+                            <span class="font-semibold text-gray-600">VAT (15%):</span>
+                            <span id="quote-vat"></span>
+                        </div>
+                        <div class="flex justify-between py-3 border-t-2 mt-2">
+                            <span class="font-bold text-xl">Quote Total:</span>
+                            <span id="quote-total" class="font-bold text-xl text-blue-600"></span>
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Area size in m²</label>
-                            <input type="number" class="mt-1 block w-full rounded-md border border-gray-400 bg-gray-100 shadow-sm p-2 area-size">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Relevant system required</label>
-                            <input type="text" class="mt-1 block w-full rounded-md border border-gray-400 bg-gray-100 shadow-sm p-2 system-required">
-                        </div>
-                    </div>
-                     <!-- Surfacing Type Preference -->
-                    <div class="mt-4">
-                        <label class="text-sm font-medium text-gray-700 mb-2 block">Surfacing type preference:</label>
-                        <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
-                            <label class="inline-flex items-center">
-                                <input type="checkbox" id="blackRubber_1" class="form-checkbox text-indigo-600 rounded">
-                                <span class="ml-2 text-gray-600">Black rubber</span>
-                            </label>
-                            <label class="inline-flex items-center">
-                                <input type="checkbox" id="coloredRubber_1" class="form-checkbox text-indigo-600 rounded colored-rubber-checkbox">
-                                <span class="ml-2 text-gray-600">Coloured rubber</span>
-                            </label>
-                            <label class="inline-flex items-center">
-                                <input type="checkbox" id="artificialTurf_1" class="form-checkbox text-indigo-600 rounded">
-                                <span class="ml-2 text-gray-600">Artificial turf</span>
-                            </label>
-                        </div>
-                    </div>
+                </div>
 
-                    <div id="colorInputContainer_1" class="hidden mt-4 color-input-container">
-                        <label for="rubberColor_1" class="block text-sm font-medium text-gray-700">Color (if colored rubber is chosen):</label>
-                        <input type="text" id="rubberColor_1" class="mt-1 block w-full rounded-md border border-gray-400 bg-gray-100 shadow-sm p-2 rubber-color-input">
-                    </div>
+                <!-- Terms and Conditions -->
+                 <div class="mt-8 text-sm text-gray-500">
+                    <h4 class="font-semibold text-gray-600 mb-2">Terms & Conditions:</h4>
+                    <p>This quote is valid for 30 days. Pricing includes supply and installation of specified safety flooring. Site must be cleared and level prior to installation. A 70% deposit is required to confirm the order.</p>
                 </div>
             </div>
-            <button id="addSiteBtn" type="button" class="mt-4 w-full sm:w-auto px-4 py-2 bg-indigo-500 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                Add Another Site
-            </button>
-        </div>
-
-        <!-- Project Questions and Requirements Section -->
-        <div class="mb-8 p-6 bg-gray-50 rounded-lg">
-            <h2 class="text-xl font-semibold mb-4 text-blue-600 underline">Project Questions and Requirements</h2>
-            <div class="space-y-6">
-                <!-- New Preferred Installation Date Field -->
-                <div>
-                    <label for="preferredDate" class="block text-sm font-medium text-gray-700">Preferred installation date:</label>
-                    <input type="date" id="preferredDate" class="mt-1 block w-full rounded-md border border-gray-400 bg-gray-100 shadow-sm p-2">
-                </div>
-
-                <!-- Tickboxes -->
-                <div>
-                    <label class="text-sm font-medium text-gray-700 mb-2 block">Customizations and Plans:</label>
-                    <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
-                        <label class="inline-flex items-center">
-                            <input type="checkbox" id="customPatterns" class="form-checkbox text-indigo-600 rounded">
-                            <span class="ml-2 text-gray-600">Custom patterns?</span>
-                        </label>
-                        <label class="inline-flex items-center">
-                            <input type="checkbox" id="sitePlans" class="form-checkbox text-indigo-600 rounded">
-                            <span class="ml-2 text-gray-600">Site plans or schematics available?</span>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Current Condition -->
-                <div>
-                    <label class="text-sm font-medium text-gray-700 mb-2 block">Current condition of the area:</label>
-                    <input type="text" id="currentCondition" class="mt-1 block w-full rounded-md border border-gray-400 bg-gray-100 shadow-sm p-2">
-                </div>
-            </div>
-            
-            <!-- Scoping Questions (moved from previous section) -->
-            <div class="space-y-4 mt-6">
-                <div class="flex items-center justify-between">
-                    <label class="text-sm font-medium text-gray-700">Will existing surfacing need removal?</label>
-                    <div class="space-x-4">
-                        <label class="inline-flex items-center">
-                            <input type="radio" name="removal" value="Yes" class="form-radio text-indigo-600">
-                            <span class="ml-1 text-gray-600">Yes</span>
-                        </label>
-                        <label class="inline-flex items-center">
-                            <input type="radio" name="removal" value="No" class="form-radio text-indigo-600" checked>
-                            <span class="ml-1 text-gray-600">No</span>
-                        </label>
-                    </div>
-                </div>
-                <div class="flex items-center justify-between">
-                    <label class="text-sm font-medium text-gray-700">Should Playground Creations allow for base prep (e.g., G5 or concrete)?</label>
-                    <div class="space-x-4">
-                        <label class="inline-flex items-center">
-                            <input type="radio" name="basePrep" value="Yes" class="form-radio text-indigo-600">
-                            <span class="ml-1 text-gray-600">Yes</span>
-                        </label>
-                        <label class="inline-flex items-center">
-                            <input type="radio" name="basePrep" value="No" class="form-radio text-indigo-600" checked>
-                            <span class="ml-1 text-gray-600">No</span>
-                        </label>
-                    </div>
-                </div>
-                <div class="flex items-center justify-between">
-                    <label class="text-sm font-medium text-gray-700">Should we include perimeter containment (curbing, borders)?</label>
-                    <div class="space-x-4">
-                        <label class="inline-flex items-center">
-                            <input type="radio" name="containment" value="Yes" class="form-radio text-indigo-600">
-                            <span class="ml-1 text-gray-600">Yes</span>
-                        </label>
-                        <label class="inline-flex items-center">
-                            <input type="radio" name="containment" value="No" class="form-radio text-indigo-600" checked>
-                            <span class="ml-1 text-gray-600">No</span>
-                        </label>
-                    </div>
-                </div>
-                <div class="flex items-center justify-between">
-                    <label class="text-sm font-medium text-gray-700">Is there any travel required?</label>
-                    <div class="space-x-4">
-                        <label class="inline-flex items-center">
-                            <input type="radio" name="travel" value="Yes" class="form-radio text-indigo-600">
-                            <span class="ml-1 text-gray-600">Yes</span>
-                        </label>
-                        <label class="inline-flex items-center">
-                            <input type="radio" name="travel" value="No" class="form-radio text-indigo-600" checked>
-                            <span class="ml-1 text-gray-600">No</span>
-                        </label>
-                    </div>
+            <!-- Action buttons for the generated quote -->
+            <div id="quote-actions" class="mt-6 text-center">
+                <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+                    <button id="generate-pdf-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg w-full sm:w-auto">Generate PDF</button>
+                    <button onclick="location.reload()" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded-lg w-full sm:w-auto">Create New Quote</button>
                 </div>
             </div>
         </div>
-
-        <button id="generatePdfBtn" class="w-full px-6 py-3 bg-indigo-700 text-white font-bold text-lg rounded-lg shadow-xl hover:bg-indigo-800 transition ease-in-out duration-150">
-            Generate PDF for Costing
-        </button>
     </div>
 
-    <!-- Hidden div to hold content for PDF generation -->
-    <div id="pdf-content" class="hidden"></div>
+    <!-- Modal for validation alerts -->
+    <div id="alert-modal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center z-50">
+        <div class="relative mx-auto p-5 border w-full max-w-sm shadow-lg rounded-md bg-white">
+            <div class="mt-3 text-center">
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100">
+                    <svg class="h-6 w-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                </div>
+                <h3 class="text-lg leading-6 font-medium text-gray-900 mt-4">Input Required</h3>
+                <div class="mt-2 px-7 py-3">
+                    <p id="modal-message" class="text-sm text-gray-500"></p>
+                </div>
+                <div class="items-center px-4 py-3">
+                    <button id="modal-ok-btn" class="px-4 py-2 bg-blue-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300">
+                        OK
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const addSiteBtn = document.getElementById('addSiteBtn');
-            const sitesContainer = document.getElementById('sites-container');
-            const generatePdfBtn = document.getElementById('generatePdfBtn');
-            const pdfContent = document.getElementById('pdf-content');
-            const projectNameInput = document.getElementById('projectName');
-            const projectHeading = document.getElementById('project-heading');
-            let siteCount = 1;
-
-            // Update the project name heading dynamically
-            projectNameInput.addEventListener('input', () => {
-                projectHeading.textContent = projectNameInput.value ? `| ${projectNameInput.value}` : '';
-            });
-
-            // Event delegation for showing/hiding color input
-            sitesContainer.addEventListener('change', (event) => {
-                const target = event.target;
-                if (target.matches('.colored-rubber-checkbox')) {
-                    const siteEntry = target.closest('.site-entry');
-                    const colorInputContainer = siteEntry.querySelector('.color-input-container');
-                    if (target.checked) {
-                        colorInputContainer.classList.remove('hidden');
-                    } else {
-                        colorInputContainer.classList.add('hidden');
-                        colorInputContainer.querySelector('input').value = '';
-                    }
-                }
-            });
-
-            // Function to add a new site entry to the form
-            addSiteBtn.addEventListener('click', () => {
-                siteCount++;
-                const newSiteEntry = document.createElement('div');
-                newSiteEntry.classList.add('site-entry', 'p-4', 'border', 'border-gray-200', 'rounded-lg', 'bg-white');
-                newSiteEntry.innerHTML = `
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-medium text-gray-800">Site #${siteCount}</h3>
-                        <button type="button" class="text-sm font-medium text-red-600 hover:text-red-800 transition remove-site-btn">Remove</button>
-                    </div>
-                    <div class="grid grid-cols-1 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Site Name</label>
-                            <input type="text" class="mt-1 block w-full rounded-md border border-gray-400 bg-gray-100 shadow-sm p-2 site-name">
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Area size in m²</label>
-                            <input type="number" class="mt-1 block w-full rounded-md border border-gray-400 bg-gray-100 shadow-sm p-2 area-size">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Relevant system required</label>
-                            <input type="text" class="mt-1 block w-full rounded-md border border-gray-400 bg-gray-100 shadow-sm p-2 system-required">
-                        </div>
-                    </div>
-                    <div class="mt-4">
-                        <label class="text-sm font-medium text-gray-700 mb-2 block">Surfacing type preference:</label>
-                        <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
-                            <label class="inline-flex items-center">
-                                <input type="checkbox" id="blackRubber_${siteCount}" class="form-checkbox text-indigo-600 rounded">
-                                <span class="ml-2 text-gray-600">Black rubber</span>
-                            </label>
-                            <label class="inline-flex items-center">
-                                <input type="checkbox" id="coloredRubber_${siteCount}" class="form-checkbox text-indigo-600 rounded colored-rubber-checkbox">
-                                <span class="ml-2 text-gray-600">Coloured rubber</span>
-                            </label>
-                            <label class="inline-flex items-center">
-                                <input type="checkbox" id="artificialTurf_${siteCount}" class="form-checkbox text-indigo-600 rounded">
-                                <span class="ml-2 text-gray-600">Artificial turf</span>
-                            </label>
-                        </div>
-                    </div>
-                    <div id="colorInputContainer_${siteCount}" class="hidden mt-4 color-input-container">
-                        <label for="rubberColor_${siteCount}" class="block text-sm font-medium text-gray-700">Color (if colored rubber is chosen):</label>
-                        <input type="text" id="rubberColor_${siteCount}" class="mt-1 block w-full rounded-md border border-gray-400 bg-gray-100 shadow-sm p-2 rubber-color-input">
-                    </div>
-                `;
-                sitesContainer.appendChild(newSiteEntry);
-            });
-
-            // Add event listener to remove a site entry
-            sitesContainer.addEventListener('click', (event) => {
-                if (event.target.classList.contains('remove-site-btn')) {
-                    event.target.closest('.site-entry').remove();
-                }
-            });
-
-            // Function to gather all form data
-            const getFormData = async () => {
-                const formData = {};
-                formData.googleDriveLink = document.getElementById('googleDriveLink').value;
-                formData.companyName = document.getElementById('companyName').value;
-                formData.projectName = document.getElementById('projectName').value;
-                formData.siteLocation = document.getElementById('siteLocation').value;
-                formData.clientName = document.getElementById('clientName').value;
-                formData.contactNumber = document.getElementById('contactNumber').value;
-                formData.emailAddress = document.getElementById('emailAddress').value;
-                
-                formData.sites = Array.from(document.querySelectorAll('.site-entry')).map((siteEntry, index) => {
-                    const siteName = siteEntry.querySelector('.site-name').value;
-                    const areaSize = siteEntry.querySelector('.area-size').value;
-                    const systemRequired = siteEntry.querySelector('.system-required').value;
-                    
-                    const surfacingType = [];
-                    const blackRubberCheckbox = siteEntry.querySelector(`input[id^="blackRubber_"]`);
-                    const coloredRubberCheckbox = siteEntry.querySelector(`input[id^="coloredRubber_"]`);
-                    const artificialTurfCheckbox = siteEntry.querySelector(`input[id^="artificialTurf_"]`);
-
-                    if (blackRubberCheckbox.checked) {
-                        surfacingType.push('Black rubber');
-                    }
-                    if (coloredRubberCheckbox.checked) {
-                        surfacingType.push('Coloured rubber');
-                    }
-                    if (artificialTurfCheckbox.checked) {
-                        surfacingType.push('Artificial turf');
-                    }
-
-                    const surfacingColor = siteEntry.querySelector(`input[id^="rubberColor_"]`).value;
-                    
-                    if (siteName || areaSize || systemRequired || surfacingType.length > 0 || surfacingColor) {
-                        return { siteName, areaSize, systemRequired, surfacingType, surfacingColor };
-                    }
-                    return null;
-                });
-
-                formData.sites = formData.sites.filter(site => site !== null);
-
-                formData.preferredDate = document.getElementById('preferredDate').value;
-                formData.customPatterns = document.getElementById('customPatterns').checked ? 'Yes' : 'No';
-                formData.sitePlans = document.getElementById('sitePlans').checked ? 'Yes' : 'No';
-                formData.currentCondition = document.getElementById('currentCondition').value;
-                formData.removal = document.querySelector('input[name="removal"]:checked').value;
-                formData.basePrep = document.querySelector('input[name="basePrep"]:checked').value;
-                formData.containment = document.querySelector('input[name="containment"]:checked').value;
-                formData.travel = document.querySelector('input[name="travel"]:checked').value;
-
-                return formData;
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- DOM ELEMENTS ---
+            const addAreaBtn = document.getElementById('add-area-btn');
+            const areasContainer = document.getElementById('areas-container');
+            const generateQuoteBtn = document.getElementById('generate-quote-btn');
+            const quoteForm = document.getElementById('quote-form');
+            const quoteOutputContainer = document.getElementById('quote-output-container');
+            const alertModal = document.getElementById('alert-modal');
+            const modalMessage = document.getElementById('modal-message');
+            const modalOkBtn = document.getElementById('modal-ok-btn');
+            const generatePdfBtn = document.getElementById('generate-pdf-btn');
+            const addCostBtn = document.getElementById('add-cost-btn');
+            const additionalCostsContainer = document.getElementById('additional-costs-container');
+            
+            // --- DATA / STATE ---
+            let areaCount = 0;
+            let costCount = 0;
+            // All pricing is stored here for easy updates. Prices are ex. VAT.
+            const systemPricing = {
+                'flexiplay_35': { name: 'FlexiPlay 35 (CFH 1.3m)', pricePerSqm: 1150.00 },
+                'flexiplay_55': { name: 'FlexiPlay 55 (CFH 2.4m)', pricePerSqm: 1500.00 },
+                'flexiplay_85': { name: 'FlexiPlay 85 (CFH 3.0m)', pricePerSqm: 1850.00 },
+                'flexiturf_40': { name: 'FlexiTurf 40 (CFH 1.6m)' },
+                'flexiturf_60': { name: 'FlexiTurf 60 (CFH 1.8m)' },
+                'flexiturf_70': { name: 'FlexiTurf 70 (CFH 2.4m)' }
+            };
+            const turfPricing = {
+                'flexiturf_40_synsport_eco': 929.79,
+                'flexiturf_60_synsport_eco': 1094.25,
+                'flexiturf_70_synsport_eco': 1217.10,
+                'flexiturf_40_easigrass': 1117.29,
+                'flexiturf_60_easigrass': 1281.75,
+                'flexiturf_70_easigrass': 1404.60
+            };
+            const colorSurcharges = {
+                'color': 0.10, // 10% surcharge for the generic "Color" option with FlexiPlay
             };
 
-            // Function to create the PDF from a hidden HTML template
-            generatePdfBtn.addEventListener('click', async () => {
-                generatePdfBtn.disabled = true;
-                generatePdfBtn.textContent = 'Generating PDF...';
+            const systemDescriptions = {
+                'flexiplay_35_color': "FlexiPlay35: 20mm Shockpad, 15mm TPV (Thermoplastic Vulcanizate) Color Rubber Crumb (Color to be confirmed), Critical Fall Height (CFH) 1.3m. An allowance of 7% wastage has been included.",
+                'flexiplay_35_black': "FlexiPlay35: 20mm Shockpad, 15mm TPV (Thermoplastic Vulcanizate) Black Rubber Crumb, Critical Fall Height (CFH) 1.3m. An allowance of 7% wastage has been included.",
+                'flexiplay_55_color': "FlexiPlay55: 40mm Shockpad, 15mm TPV (Thermoplastic Vulcanizate) Color Rubber Crumb, (Color to be confirmed) Critical Fall Height (CFH) 2.4m. An allowance of 7% wastage has been included.",
+                'flexiplay_55_black': "FlexiPlay55: 40mm Shockpad, 15mm TPV (Thermoplastic Vulcanizate) Black Rubber Crumb, Critical Fall Height (CFH) 2.4m. An allowance of 7% wastage has been included.",
+                'flexiplay_85_color': "FlexiPlay85: 70mm Shockpad, 15mm TPV (Thermoplastic Vulcanizate) Color Rubber Crumb, (Color to be confirmed) Critical Fall Height (CFH) 3.0m. An allowance of 7% wastage has been included.",
+                'flexiplay_85_black': "FlexiPlay85: 70mm Shockpad, 15mm TPV (Thermoplastic Vulcanizate) Black Rubber Crumb, Critical Fall Height (CFH) 3.0m. An allowance of 7% wastage has been included.",
+                'flexiturf_40_synsport_eco': "FlexiTurf40: 40mm Shockpad, Turf Type: 25mm Eco Green, Critical Fall Height (CFH) 1.6m. An allowance of 7% wastage has been included.",
+                'flexiturf_60_synsport_eco': "FlexiTurf60: 60mm Shockpad, Turf Type: 25mm Eco Green, Critical Fall Height (CFH) 1.8m. An allowance of 7% wastage has been included.",
+                'flexiturf_70_synsport_eco': "FlexiTurf70: 70mm Shockpad, Turf Type: 25mm Eco Green, Critical Fall Height (CFH) 2.4m. An allowance of 7% wastage has been included.",
+                'flexiturf_40_easigrass': "FlexiTurf40: 40mm Shockpad, Turf Type: 25mm Prem Green, Critical Fall Height (CFH) 1.6m. An allowance of 7% wastage has been included.",
+                'flexiturf_60_easigrass': "FlexiTurf60: 60mm Shockpad, Turf Type: 25mm Prem Green, Critical Fall Height (CFH) 1.8m. An allowance of 7% wastage has been included.",
+                'flexiturf_70_easigrass': "FlexiTurf70: 70mm Shockpad, Turf Type: 25mm Prem Green, Critical Fall Height (CFH) 2.4m. An allowance of 7% wastage has been included."
+            };
 
-                const data = await getFormData();
-                const now = new Date();
-                const dateString = now.toLocaleDateString();
-                const timeString = now.toLocaleTimeString();
+            // --- FUNCTIONS ---
 
-                // Get the project name and sanitize it for the filename
-                const projectName = data.projectName.trim();
-                const filename = projectName ? `${projectName.replace(/[^a-zA-Z0-9 ]/g, '').replace(/ /g, '_')}_RFQ.pdf` : 'RFQ_Quote_Sheet.pdf';
+            // Formats a number into South African Rand (ZAR) currency format.
+            const formatCurrency = (num) => new Intl.NumberFormat('en-ZA', { style: 'currency', currency: 'ZAR' }).format(num);
+            
+            // Shows the custom validation modal with a specific message.
+            const showModal = (message) => {
+                modalMessage.textContent = message;
+                alertModal.classList.remove('hidden');
+            };
+
+            // Hides the custom validation modal.
+            const hideModal = () => {
+                alertModal.classList.add('hidden');
+            };
+
+            // Generates a PDF from the displayed quote.
+            const generatePDF = () => {
+                const quoteOutput = document.getElementById('quote-output');
                 
-                // Clear and populate the PDF content div
-                pdfContent.innerHTML = '';
-                pdfContent.classList.remove('hidden');
+                generatePdfBtn.textContent = 'Generating...';
+                generatePdfBtn.disabled = true;
 
-                const html = `
-                    <div style="padding: 40px; font-family: 'Inter', sans-serif; box-sizing: border-box; width: 794px;">
-                        <h1 style="font-size: 32px; font-weight: 800; color: #4338ca; margin-bottom: 8px;">RFQ: ${data.companyName} | ${data.projectName}</h1>
-                        <p style="font-size: 18px; color: #6b7280; margin-bottom: 8px;">Quote Preparation Sheet</p>
-                        <p style="font-size: 14px; color: #6b7280; margin-bottom: 32px;"><strong>Generated:</strong> ${dateString} at ${timeString}</p>
-                        
-                        <div style="border-bottom: 1px solid #d1d5db; padding-bottom: 16px; margin-bottom: 16px;">
-                            <h2 style="font-size: 24px; font-weight: 700; color: #4338ca; margin-bottom: 8px;">Client & Project Details</h2>
-                            ${data.googleDriveLink ? `<p style="font-size: 14px;"><strong>Google Drive Link:</strong> <a href="${data.googleDriveLink}" style="color: #4338ca; text-decoration: underline;">${data.googleDriveLink}</a></p>` : ''}
-                            <p style="font-size: 14px;"><strong>Client Name:</strong> ${data.clientName || 'N/A'}</p>
-                            <p style="font-size: 14px;"><strong>Contact Number:</strong> ${data.contactNumber || 'N/A'}</p>
-                            <p style="font-size: 14px;"><strong>Email Address:</strong> ${data.emailAddress || 'N/A'}</p>
-                            <p style="font-size: 14px;"><strong>Project Name:</strong> ${data.projectName || 'N/A'}</p>
-                            <p style="font-size: 14px;"><strong>Site Location:</strong> ${data.siteLocation || 'N/A'}</p>
-                        </div>
-                        
-                        <div style="border-bottom: 1px solid #d1d5db; padding-bottom: 16px; margin-bottom: 16px;">
-                            <h2 style="font-size: 24px; font-weight: 700; color: #4338ca; margin-bottom: 8px;">Surfacing Details</h2>
-                            ${data.sites.map((site, index) => `
-                                <div style="margin-bottom: 16px;">
-                                    <h3 style="font-size: 18px; font-weight: 600; color: #1f2937;">${site.siteName || `Site #${index + 1}`}</h3>
-                                    <p style="font-size: 14px;"><strong>Area Size:</strong> ${site.areaSize || 'N/A'} m²</p>
-                                    <p style="font-size: 14px;"><strong>System Required:</strong> ${site.systemRequired || 'N/A'}</p>
-                                    <p style="font-size: 14px;"><strong>Surfacing Type Preference:</strong> ${site.surfacingType.join(', ') || 'N/A'}</p>
-                                    ${site.surfacingColor ? `<p style="font-size: 14px;"><strong>Surfacing Color:</strong> ${site.surfacingColor}</p>` : ''}
-                                </div>
-                            `).join('')}
-                        </div>
+                html2canvas(quoteOutput, { 
+                    scale: 2, // Higher scale for better PDF resolution
+                    useCORS: true 
+                }).then(canvas => {
+                    const imgData = canvas.toDataURL('image/png');
+                    const { jsPDF } = window.jspdf;
+                    
+                    const pdfWidth = 210; // A4 width in mm
+                    const pdfHeight = 297; // A4 height in mm
+                    const margin = 15;
+                    
+                    const imgWidth = canvas.width;
+                    const imgHeight = canvas.height;
+                    const ratio = imgWidth / imgHeight;
+                    
+                    let contentWidth = pdfWidth - (margin * 2);
+                    let contentHeight = contentWidth / ratio;
 
-                        <div style="padding-bottom: 16px;">
-                            <h2 style="font-size: 24px; font-weight: 700; color: #4338ca; margin-bottom: 8px;">Project Questions and Requirements</h2>
-                            <p style="font-size: 14px;"><strong>Preferred Installation Date:</strong> ${data.preferredDate || 'N/A'}</p>
-                            <p style="font-size: 14px;"><strong>Custom Patterns?:</strong> ${data.customPatterns}</p>
-                            <p style="font-size: 14px;"><strong>Site Plans/Schematics Available:</strong> ${data.sitePlans}</p>
-                            <p style="font-size: 14px;"><strong>Current Area Condition:</strong> ${data.currentCondition}</p>
-                            <p style="font-size: 14px;"><strong>Existing Surfacing Removal:</strong> ${data.removal}</p>
-                            <p style="font-size: 14px;"><strong>Base Prep Included:</strong> ${data.basePrep}</p>
-                            <p style="font-size: 14px;"><strong>Perimeter Containment Included:</strong> ${data.containment}</p>
-                            <p style="font-size: 14px;"><strong>Travel Required:</strong> ${data.travel}</p>
+                    if (contentHeight > pdfHeight - (margin * 2)) {
+                        contentHeight = pdfHeight - (margin * 2);
+                        contentWidth = contentHeight * ratio;
+                    }
+
+                    const pdf = new jsPDF('p', 'mm', 'a4');
+                    pdf.addImage(imgData, 'PNG', margin, margin, contentWidth, contentHeight);
+                    
+                    const quoteId = document.getElementById('quote-id').textContent;
+                    pdf.save(`Playground-Creations-Quote-${quoteId}.pdf`);
+
+                }).catch(err => {
+                    console.error("PDF Generation Error: ", err);
+                    showModal('Sorry, there was an error generating the PDF.');
+                }).finally(() => {
+                    generatePdfBtn.textContent = 'Generate PDF';
+                    generatePdfBtn.disabled = false;
+                });
+            };
+
+            // Adds a new row for an additional cost item in Step 3.
+            const addCostRow = () => {
+                costCount++;
+                const costId = `cost-${costCount}`;
+                const row = document.createElement('div');
+                row.classList.add('area-card', 'p-4'); // Re-using area-card style for consistency
+                row.id = costId;
+
+                row.innerHTML = `
+                    <button class="remove-btn" data-remove="${costId}" title="Remove Cost">&times;</button>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
+                        <div>
+                            <label class="input-label text-sm">Item Type</label>
+                            <select class="form-input cost-type-select text-sm">
+                                <option value="travel_accom">Travel & Accommodation</option>
+                                <option value="playsafe">Playsafe Africa Inspection</option>
+                                <option value="other">Other</option>
+                            </select>
+                            <input type="text" class="form-input cost-desc-input hidden mt-2 text-sm" placeholder="Custom Description">
+                        </div>
+                        <div>
+                            <label class="input-label text-sm">Quantity</label>
+                            <input type="number" class="form-input cost-qty-input text-sm" placeholder="e.g., 1">
+                        </div>
+                        <div>
+                            <label class="input-label text-sm">Unit Price</label>
+                            <input type="number" class="form-input cost-price-input text-sm" placeholder="e.g., 2500">
                         </div>
                     </div>
                 `;
+                additionalCostsContainer.appendChild(row);
+            };
+            
+            // Dynamically updates the color options based on the selected safety system.
+            const updateColorOptions = (systemSelectElement) => {
+                const card = systemSelectElement.closest('.area-card');
+                if (!card) return;
 
-                pdfContent.innerHTML = html;
+                const colorSelect = card.querySelector('.color-select');
+                const selectedSystem = systemSelectElement.value;
+                
+                colorSelect.innerHTML = ''; // Clear existing options
 
-                // Use html2canvas to render the entire content div to an image
-                html2canvas(pdfContent, {
-                    scale: 2,
-                    useCORS: true,
-                    allowTaint: true,
-                    logging: true,
-                    scrollY: -window.scrollY // Fixes an issue with page scrolling
-                }).then(canvas => {
-                    const { jsPDF } = window.jspdf;
-                    const imgData = canvas.toDataURL('image/jpeg'); // Using jpeg for smaller file size
-                    const pdf = new jsPDF('p', 'mm', 'a4');
-                    const imgWidth = 210; // A4 width in mm
-                    const imgHeight = canvas.height * imgWidth / canvas.width;
+                if (selectedSystem.startsWith('flexiplay')) {
+                    colorSelect.innerHTML = `
+                        <option value="black">Black</option>
+                        <option value="color">Color (+10%)</option>
+                    `;
+                } else if (selectedSystem.startsWith('flexiturf')) {
+                    colorSelect.innerHTML = `
+                        <option value="easigrass">Easigrass</option>
+                        <option value="synsport_eco">SynSport Eco</option>
+                    `;
+                }
+            };
 
-                    // Add the image to a single page
-                    pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
+            // Adds a new area input card to the form.
+            const addArea = () => {
+                areaCount++;
+                const areaId = `area-${areaCount}`;
+                const card = document.createElement('div');
+                card.classList.add('area-card');
+                card.id = areaId;
 
-                    // Save the PDF
-                    pdf.save(filename);
+                card.innerHTML = `
+                    <button class="remove-btn" data-remove="${areaId}" title="Remove Area">&times;</button>
+                    <h3 class="font-semibold text-lg mb-3 border-b pb-2">Area ${areaCount}</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-3">
+                        <div class="md:col-span-2">
+                            <label class="input-label text-sm">Area Description</label>
+                            <input type="text" class="form-input area-desc text-sm" placeholder="e.g., Main Play Zone" value="Area ${areaCount}">
+                        </div>
+                        <div>
+                            <label class="input-label text-sm">Safety System (CFH)</label>
+                            <select class="form-input system-select text-sm">
+                                <option value="flexiplay_35">FlexiPlay 35 (CFH 1.3m)</option>
+                                <option value="flexiplay_55" selected>FlexiPlay 55 (CFH 2.4m)</option>
+                                <option value="flexiplay_85">FlexiPlay 85 (CFH 3.0m)</option>
+                                <option value="flexiturf_40">FlexiTurf 40 (CFH 1.6m)</option>
+                                <option value="flexiturf_60">FlexiTurf 60 (CFH 1.8m)</option>
+                                <option value="flexiturf_70">FlexiTurf 70 (CFH 2.4m)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="input-label text-sm">Flooring Colour</label>
+                            <select class="form-input color-select text-sm">
+                                <!-- Options will be dynamically populated -->
+                            </select>
+                        </div>
+                        <div>
+                            <label class="input-label text-sm">Installation (per m²)</label>
+                            <select class="form-input installation-select text-sm">
+                                <option value="0">None</option>
+                                <option value="350">R350.00</option>
+                                <option value="450" selected>R450.00</option>
+                                <option value="550">R550.00</option>
+                                <option value="650">R650.00</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="input-label text-sm">Base Preparation (per m²)</label>
+                            <select class="form-input base-prep-select text-sm">
+                                <option value="0" selected>None</option>
+                                <option value="350">R350.00</option>
+                                <option value="450">R450.00</option>
+                                <option value="550">R550.00</option>
+                                <option value="650">R650.00</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-2 grid grid-cols-2 gap-4 pt-2">
+                             <div>
+                                <label class="input-label text-sm">Length (m)</label>
+                                <input type="number" class="form-input area-length text-sm" placeholder="Optional">
+                            </div>
+                            <div>
+                                <label class="input-label text-sm">Width (m)</label>
+                                <input type="number" class="form-input area-width text-sm" placeholder="Optional">
+                            </div>
+                        </div>
+                         <div class="md:col-span-2 text-center text-gray-500 text-xs my-1">OR</div>
+                        <div class="md:col-span-2">
+                            <label class="input-label text-sm font-medium">Total Area (m²)</label>
+                            <input type="number" class="form-input area-sqm text-sm" placeholder="Enter total area directly">
+                        </div>
+                    </div>
+                `;
+                areasContainer.appendChild(card);
 
-                    // Reset button and hide PDF content
-                    generatePdfBtn.disabled = false;
-                    generatePdfBtn.textContent = 'Generate PDF for Costing';
-                    pdfContent.classList.add('hidden');
+                // Immediately update the color options for the newly added card based on its default system
+                const newSystemSelect = card.querySelector('.system-select');
+                if(newSystemSelect) {
+                    updateColorOptions(newSystemSelect);
+                }
+            };
+
+            // Handles automatic calculation between length/width and total area.
+            const handleAreaCalculation = (e) => {
+                const card = e.target.closest('.area-card');
+                if (!card) return;
+
+                const lengthInput = card.querySelector('.area-length');
+                const widthInput = card.querySelector('.area-width');
+                const sqmInput = card.querySelector('.area-sqm');
+                
+                if (e.target === lengthInput || e.target === widthInput) {
+                    const length = parseFloat(lengthInput.value) || 0;
+                    const width = parseFloat(widthInput.value) || 0;
+                    if (length > 0 && width > 0) {
+                        sqmInput.value = (length * width).toFixed(2);
+                    }
+                }
+                
+                if(e.target === sqmInput && sqmInput.value) {
+                    lengthInput.value = '';
+                    widthInput.value = '';
+                }
+            };
+            
+            // Main function to gather all data, calculate, and generate the quote display.
+            const generateQuote = () => {
+                // --- 1. GATHER & VALIDATE DATA ---
+                const clientName = document.getElementById('clientName').value;
+                const clientContact = document.getElementById('clientContact').value;
+                const siteLocation = document.getElementById('siteLocation').value;
+                
+                if (!clientName || !siteLocation) {
+                    showModal('Please fill in at least the Client Name and Site Location.');
+                    return;
+                }
+                
+                const quoteItemsBody = document.getElementById('quote-items-body');
+                quoteItemsBody.innerHTML = ''; 
+                let quoteItemsHTML = '';
+                let subtotal = 0;
+                let totalSqm = 0;
+
+                const areaElements = areasContainer.querySelectorAll('.area-card');
+                if(areaElements.length === 0) {
+                     showModal('Please add at least one area to the quote.');
+                    return;
+                }
+
+                areaElements.forEach(area => {
+                    const sqm = parseFloat(area.querySelector('.area-sqm').value) || 0;
+                    if (sqm > 0) {
+                        totalSqm += sqm;
+
+                        const selectedSystemKey = area.querySelector('.system-select').value;
+                        const selectedColorKey = area.querySelector('.color-select').value;
+                        const areaDescription = area.querySelector('.area-desc').value || 'Unnamed Area';
+                        const installationCostPerSqm = parseFloat(area.querySelector('.installation-select').value) || 0;
+                        const basePrepCostPerSqm = parseFloat(area.querySelector('.base-prep-select').value) || 0;
+
+                        // --- Material Calculation ---
+                        const selectedSystem = systemPricing[selectedSystemKey];
+                        let finalPricePerSqm;
+
+                        if (selectedSystemKey.startsWith('flexiturf')) {
+                            const priceKey = `${selectedSystemKey}_${selectedColorKey}`;
+                            finalPricePerSqm = turfPricing[priceKey] || 0;
+                        } else { // Existing FlexiPlay logic
+                            let basePricePerSqm = selectedSystem.pricePerSqm;
+                            const surchargePercentage = colorSurcharges[selectedColorKey] || 0;
+                            const colorSurcharge = basePricePerSqm * surchargePercentage;
+                            finalPricePerSqm = basePricePerSqm + colorSurcharge;
+                        }
+                        const materialLineTotal = sqm * finalPricePerSqm;
+                        
+                        subtotal += materialLineTotal;
+
+                        const descriptionKey = `${selectedSystemKey}_${selectedColorKey}`;
+                        let detailedDescription = systemDescriptions[descriptionKey];
+
+                        if (!detailedDescription) {
+                            const systemName = selectedSystem.name;
+                            const colorName = area.querySelector(`.color-select option[value="${selectedColorKey}"]`).textContent;
+                            detailedDescription = `${systemName}, Turf Type: ${colorName}. An allowance of 7% wastage has been included.`;
+                        }
+                        
+                        // --- Add Material Line to Quote ---
+                        quoteItemsHTML += `
+                            <tr class="border-b">
+                                <td class="p-3 align-top">
+                                    <p class="font-semibold">${areaDescription}</p>
+                                    <p class="text-sm text-gray-600">${detailedDescription}</p>
+                                </td>
+                                <td class="text-right p-3 align-top">${sqm.toFixed(2)}</td>
+                                <td class="text-right p-3 align-top">${formatCurrency(finalPricePerSqm)}</td>
+                                <td class="text-right p-3 align-top font-semibold">${formatCurrency(materialLineTotal)}</td>
+                            </tr>
+                        `;
+
+                        // --- Base Preparation Calculation & Add Line to Quote ---
+                        if (basePrepCostPerSqm > 0) {
+                            const basePrepTotal = sqm * basePrepCostPerSqm;
+                            subtotal += basePrepTotal;
+
+                            quoteItemsHTML += `
+                                <tr class="border-b bg-gray-50/50">
+                                    <td class="p-3 align-top">
+                                        <p class="pl-4 text-gray-800">└ G5 base prepared for the installation of impact surfacing, including edge paving to ensure a clean and finished perimeter</p>
+                                    </td>
+                                    <td class="text-right p-3 align-top">${sqm.toFixed(2)}</td>
+                                    <td class="text-right p-3 align-top">${formatCurrency(basePrepCostPerSqm)}</td>
+                                    <td class="text-right p-3 align-top font-semibold">${formatCurrency(basePrepTotal)}</td>
+                                </tr>
+                            `;
+                        }
+
+                        // --- Installation Calculation & Add Line to Quote ---
+                        if (installationCostPerSqm > 0) {
+                            const installationTotal = sqm * installationCostPerSqm;
+                            subtotal += installationTotal;
+
+                            quoteItemsHTML += `
+                                <tr class="border-b bg-gray-50/50">
+                                    <td class="p-3 align-top">
+                                        <p class="pl-4 text-gray-800">└ Installation of impact surfacing</p>
+                                    </td>
+                                    <td class="text-right p-3 align-top">${sqm.toFixed(2)}</td>
+                                    <td class="text-right p-3 align-top">${formatCurrency(installationCostPerSqm)}</td>
+                                    <td class="text-right p-3 align-top font-semibold">${formatCurrency(installationTotal)}</td>
+                                </tr>
+                            `;
+                        }
+                    }
                 });
+
+                // --- GATHER ADDITIONAL COSTS ---
+                const costElements = additionalCostsContainer.querySelectorAll('.area-card');
+                let hasAdditionalCosts = false;
+
+                costElements.forEach(costRow => {
+                    const type = costRow.querySelector('.cost-type-select').value;
+                    const qty = parseFloat(costRow.querySelector('.cost-qty-input').value) || 0;
+                    const price = parseFloat(costRow.querySelector('.cost-price-input').value) || 0;
+                    
+                    if (qty > 0 && price > 0) {
+                        hasAdditionalCosts = true;
+                        let description = '';
+
+                        if (type === 'other') {
+                            description = costRow.querySelector('.cost-desc-input').value || 'Other Cost';
+                        } else if (type === 'playsafe') {
+                             description = 'Playsafe Africa Post Installation Inspection and Sign Off';
+                        } else {
+                            description = 'Travel & Accommodation';
+                        }
+
+                        const total = qty * price;
+                        subtotal += total;
+                        quoteItemsHTML += `
+                            <tr class="border-b">
+                                <td class="p-3 align-top">
+                                    <p class="font-semibold">${description}</p>
+                                </td>
+                                <td class="text-right p-3 align-top">${qty}</td>
+                                <td class="text-right p-3 align-top">${formatCurrency(price)}</td>
+                                <td class="text-right p-3 align-top font-semibold">${formatCurrency(total)}</td>
+                            </tr>
+                        `;
+                    }
+                });
+
+                const hasAreaItems = totalSqm > 0;
+                
+                if (!hasAreaItems && !hasAdditionalCosts) {
+                    showModal('Please enter details for at least one area, or add at least one additional cost.');
+                    return;
+                }
+
+                // --- 2. CALCULATE TOTALS ---
+                const vat = subtotal * 0.15;
+                const total = subtotal + vat;
+
+                // --- 3. POPULATE QUOTE DISPLAY ---
+                document.getElementById('quote-id').textContent = `PC-${Date.now().toString().slice(-6)}`;
+                document.getElementById('quote-date').textContent = new Date().toLocaleDateString('en-ZA');
+                document.getElementById('quote-client-name').textContent = clientName;
+                document.getElementById('quote-client-contact').textContent = clientContact;
+                document.getElementById('quote-site-location').textContent = siteLocation;
+
+                quoteItemsBody.innerHTML = quoteItemsHTML;
+
+                document.getElementById('quote-subtotal').textContent = formatCurrency(subtotal);
+                document.getElementById('quote-vat').textContent = formatCurrency(vat);
+                document.getElementById('quote-total').textContent = formatCurrency(total);
+                
+                // --- 4. SHOW THE QUOTE ---
+                quoteForm.classList.add('hidden');
+                quoteOutputContainer.classList.remove('hidden');
+                window.scrollTo(0, 0);
+            };
+
+            // --- EVENT LISTENERS ---
+            addAreaBtn.addEventListener('click', addArea);
+            generateQuoteBtn.addEventListener('click', generateQuote);
+            generatePdfBtn.addEventListener('click', generatePDF);
+            modalOkBtn.addEventListener('click', hideModal);
+            addCostBtn.addEventListener('click', addCostRow);
+            
+            // Use event delegation for dynamically added elements
+            areasContainer.addEventListener('change', (e) => {
+                if (e.target.matches('.system-select')) {
+                    updateColorOptions(e.target);
+                }
             });
+
+            areasContainer.addEventListener('click', (e) => {
+                if (e.target.matches('.remove-btn')) {
+                    const cardIdToRemove = e.target.dataset.remove;
+                    document.getElementById(cardIdToRemove).remove();
+                }
+            });
+            areasContainer.addEventListener('input', handleAreaCalculation);
+
+            additionalCostsContainer.addEventListener('click', (e) => {
+                if(e.target.matches('.remove-btn')) {
+                    const costIdToRemove = e.target.dataset.remove;
+                    document.getElementById(costIdToRemove).remove();
+                }
+            });
+
+            additionalCostsContainer.addEventListener('change', (e) => {
+                if (e.target.matches('.cost-type-select')) {
+                    const parentCard = e.target.closest('.area-card');
+                    const descInput = parentCard.querySelector('.cost-desc-input');
+                    if (e.target.value === 'other') {
+                        descInput.classList.remove('hidden');
+                    } else {
+                        descInput.classList.add('hidden');
+                    }
+                }
+            });
+
+            // --- INITIALIZATION ---
+            addArea(); // Start with one area card by default.
         });
     </script>
 </body>
 </html>
+
+
