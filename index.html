@@ -150,7 +150,7 @@
                 <div class="flex justify-between items-start border-b-2 pb-6 mb-6">
                     <div>
                         <h2 class="text-3xl font-bold text-blue-600">Playground Creations</h2>
-                        <p class="text-gray-500">Official Quotation</p>
+                        <p class="text-gray-500">Where Play Meets Safety</p>
                     </div>
                     <div class="text-right">
                         <p class="font-bold">Quote ID: <span id="quote-id"></span></p>
@@ -217,6 +217,7 @@
             <!-- Action buttons for the generated quote -->
             <div id="quote-actions" class="mt-6 text-center">
                 <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+                    <button id="edit-quote-btn" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-6 rounded-lg w-full sm:w-auto">Edit Quote</button>
                     <button id="generate-pdf-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg w-full sm:w-auto">Generate PDF</button>
                     <button onclick="location.reload()" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded-lg w-full sm:w-auto">Create New Quote</button>
                 </div>
@@ -258,10 +259,12 @@
             const generatePdfBtn = document.getElementById('generate-pdf-btn');
             const addCostBtn = document.getElementById('add-cost-btn');
             const additionalCostsContainer = document.getElementById('additional-costs-container');
+            const editQuoteBtn = document.getElementById('edit-quote-btn');
             
             // --- DATA / STATE ---
             let areaCount = 0;
             let costCount = 0;
+            let currentQuoteId = null; // To persist quote ID during an edit session
             // All pricing is stored here for easy updates. Prices are ex. VAT.
             const systemPricing = {
                 'flexiplay_35': { name: 'FlexiPlay 35 (CFH 1.3m)', pricePerSqm: 1150.00 },
@@ -314,12 +317,22 @@
                 alertModal.classList.add('hidden');
             };
 
+            // Allows the user to go back to the form to edit the quote.
+            const editQuote = () => {
+                quoteOutputContainer.classList.add('hidden');
+                quoteForm.classList.remove('hidden');
+                window.scrollTo(0, 0); // Scroll back to the top of the form
+            };
+
             // Generates a PDF from the displayed quote.
             const generatePDF = () => {
                 const quoteOutput = document.getElementById('quote-output');
                 
                 generatePdfBtn.textContent = 'Generating...';
                 generatePdfBtn.disabled = true;
+
+                // Temporarily change background color for PDF generation
+                quoteOutput.style.backgroundColor = '#FAF8F2';
 
                 html2canvas(quoteOutput, { 
                     scale: 2, // Higher scale for better PDF resolution
@@ -356,6 +369,8 @@
                 }).finally(() => {
                     generatePdfBtn.textContent = 'Generate PDF';
                     generatePdfBtn.disabled = false;
+                    // Revert background color by removing the inline style
+                    quoteOutput.style.backgroundColor = '';
                 });
             };
 
@@ -675,7 +690,10 @@
                 const total = subtotal + vat;
 
                 // --- 3. POPULATE QUOTE DISPLAY ---
-                document.getElementById('quote-id').textContent = `PC-${Date.now().toString().slice(-6)}`;
+                if (!currentQuoteId) {
+                    currentQuoteId = `PC-${Date.now().toString().slice(-6)}`;
+                }
+                document.getElementById('quote-id').textContent = currentQuoteId;
                 document.getElementById('quote-date').textContent = new Date().toLocaleDateString('en-ZA');
                 document.getElementById('quote-client-name').textContent = clientName;
                 document.getElementById('quote-client-contact').textContent = clientContact;
@@ -699,6 +717,7 @@
             generatePdfBtn.addEventListener('click', generatePDF);
             modalOkBtn.addEventListener('click', hideModal);
             addCostBtn.addEventListener('click', addCostRow);
+            editQuoteBtn.addEventListener('click', editQuote);
             
             // Use event delegation for dynamically added elements
             areasContainer.addEventListener('change', (e) => {
@@ -740,5 +759,9 @@
     </script>
 </body>
 </html>
+
+
+
+
 
 
