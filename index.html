@@ -324,55 +324,145 @@
                 window.scrollTo(0, 0); // Scroll back to the top of the form
             };
 
-            // Generates a PDF from the displayed quote.
-            const generatePDF = () => {
+            // Generates a PDF from the displayed quote with intelligent page breaks.
+            const generatePDF = async () => {
                 const quoteOutput = document.getElementById('quote-output');
-                
                 generatePdfBtn.textContent = 'Generating...';
                 generatePdfBtn.disabled = true;
 
-                // Temporarily change background color for PDF generation
-                quoteOutput.style.backgroundColor = '#FAF8F2';
+                // Create a temporary, off-screen container for rendering parts to measure them
+                const renderContainer = document.createElement('div');
+                document.body.appendChild(renderContainer);
+                renderContainer.style.position = 'absolute';
+                renderContainer.style.left = '-9999px';
+                renderContainer.style.width = quoteOutput.clientWidth + 'px';
+                renderContainer.style.backgroundColor = '#FAF8F2';
+                renderContainer.style.fontFamily = window.getComputedStyle(quoteOutput).fontFamily;
+                renderContainer.style.color = window.getComputedStyle(quoteOutput).color;
 
-                html2canvas(quoteOutput, { 
-                    scale: 2, // Higher scale for better PDF resolution
-                    useCORS: true 
-                }).then(canvas => {
-                    const imgData = canvas.toDataURL('image/png');
+                try {
                     const { jsPDF } = window.jspdf;
-                    
-                    const pdfWidth = 210; // A4 width in mm
-                    const pdfHeight = 297; // A4 height in mm
+                    const pdf = new jsPDF('p', 'mm', 'a4');
+                    const pdfWidth = pdf.internal.pageSize.getWidth();
+                    const pdfHeight = pdf.internal.pageSize.getHeight();
                     const margin = 15;
-                    
-                    const imgWidth = canvas.width;
-                    const imgHeight = canvas.height;
-                    const ratio = imgWidth / imgHeight;
-                    
-                    let contentWidth = pdfWidth - (margin * 2);
-                    let contentHeight = contentWidth / ratio;
+                    const contentWidth = pdfWidth - margin * 2;
+                    let cursorY = margin;
+                    let tableHeaderCanvas = null;
 
-                    if (contentHeight > pdfHeight - (margin * 2)) {
-                        contentHeight = pdfHeight - (margin * 2);
-                        contentWidth = contentHeight * ratio;
+                    // --- Helper to render an element and return its canvas & height in mm ---
+                    const getRenderedPart = async (element) => {
+                        renderContainer.innerHTML = ''; // Clear container
+                        renderContainer.appendChild(element.cloneNode(true));
+                        const canvas = await html2canvas(renderContainer, {
+                            scale: 2,
+                            useCORS: true,
+                            backgroundColor: '#FAF8F2'
+                        });
+                        const ratio = canvas.height / canvas.width;
+                        const imgHeight = contentWidth * ratio;
+                        return { canvas, imgHeight };
+                    };
+                    
+                    // --- Add the table header to the current page ---
+                    const addTableHeader = () => {
+                         if (tableHeaderCanvas) {
+                            const thRatio = tableHeaderCanvas.height / tableHeaderCanvas.width;
+                            const thImgHeight = contentWidth * thRatio;
+                            pdf.addImage(tableHeaderCanvas.toDataURL('image/png'), 'PNG', margin, cursorY, contentWidth, thImgHeight);
+                            cursorY += thImgHeight;
+                        }
+                    };
+
+                    // --- 1. Render and add the Quote Header ---
+                    const headerContainer = document.createElement('div');
+                    headerContainer.style.padding = '32px 32px 0 32px'; // Match p-8 top/sides
+                    headerContainer.appendChild(quoteOutput.querySelector('.flex.justify-between.items-start').cloneNode(true));
+                    headerContainer.appendChild(quoteOutput.querySelector('.grid.md\\:grid-cols-2').cloneNode(true));
+                    headerContainer.appendChild(quoteOutput.querySelector('h3.font-semibold').cloneNode(true));
+                    
+                    const headerPart = await getRenderedPart(headerContainer);
+                    pdf.addImage(headerPart.canvas.toDataURL('image/png'), 'PNG', margin, cursorY, contentWidth, headerPart.imgHeight);
+                    cursorY += headerPart.imgHeight;
+                    
+                    // --- 2. Render and add the Table Header ---
+                    const tableHeaderWrapper = document.createElement('div');
+                    tableHeaderWrapper.style.padding = '0 32px';
+                    const tempTableForHeader = document.createElement('table');
+                    tempTableForHeader.className = 'w-full mb-8';
+                    tempTableForHeader.appendChild(quoteOutput.querySelector('table thead').cloneNode(true));
+                    tableHeaderWrapper.appendChild(tempTableForHeader);
+
+                    const tableHeaderPart = await getRenderedPart(tableHeaderWrapper);
+                    tableHeaderCanvas = tableHeaderPart.canvas; // Store for reuse
+                    addTableHeader();
+
+                    // --- 3. Group, measure, and render Table Rows ---
+                    const rows = Array.from(quoteOutput.querySelectorAll('table tbody tr'));
+                    const rowGroups = [];
+                    let currentGroup = [];
+                    rows.forEach(row => {
+                        // A new group starts with a row that is NOT a sub-item (base prep/install)
+                        if (!row.classList.contains('bg-gray-50/50')) {
+                            if (currentGroup.length > 0) rowGroups.push(currentGroup);
+                            currentGroup = [];
+                        }
+                        currentGroup.push(row);
+                    });
+                    if (currentGroup.length > 0) rowGroups.push(currentGroup);
+
+                    for (const group of rowGroups) {
+                        const groupWrapper = document.createElement('div');
+                        groupWrapper.style.padding = '0 32px';
+                        const tempTableForGroup = document.createElement('table');
+                        tempTableForGroup.className = 'w-full';
+                        const tempTbody = document.createElement('tbody');
+                        group.forEach(row => tempTbody.appendChild(row.cloneNode(true)));
+                        tempTableForGroup.appendChild(tempTbody);
+                        groupWrapper.appendChild(tempTableForGroup);
+                        
+                        const groupPart = await getRenderedPart(groupWrapper);
+                        
+                        // Page break logic: if the current group doesn't fit, add a new page
+                        if (cursorY + groupPart.imgHeight > pdfHeight - margin) {
+                            pdf.addPage();
+                            cursorY = margin;
+                            addTableHeader();
+                        }
+                        
+                        pdf.addImage(groupPart.canvas.toDataURL('image/png'), 'PNG', margin, cursorY, contentWidth, groupPart.imgHeight);
+                        cursorY += groupPart.imgHeight;
                     }
 
-                    const pdf = new jsPDF('p', 'mm', 'a4');
-                    pdf.addImage(imgData, 'PNG', margin, margin, contentWidth, contentHeight);
-                    
+                    // --- 4. Render and add the Footer ---
+                    const footerContainer = document.createElement('div');
+                    footerContainer.style.padding = '0 32px 32px 32px';
+                    footerContainer.appendChild(quoteOutput.querySelector('.flex.justify-end').cloneNode(true));
+                    footerContainer.appendChild(quoteOutput.querySelector('.mt-8.text-sm').cloneNode(true));
+
+                    const footerPart = await getRenderedPart(footerContainer);
+
+                    if (cursorY + footerPart.imgHeight > pdfHeight - margin) {
+                        pdf.addPage();
+                        cursorY = margin;
+                    }
+                    pdf.addImage(footerPart.canvas.toDataURL('image/png'), 'PNG', margin, cursorY, contentWidth, footerPart.imgHeight);
+
+                    // --- 5. Save the PDF ---
                     const quoteId = document.getElementById('quote-id').textContent;
                     pdf.save(`Playground-Creations-Quote-${quoteId}.pdf`);
 
-                }).catch(err => {
+                } catch (err) {
                     console.error("PDF Generation Error: ", err);
                     showModal('Sorry, there was an error generating the PDF.');
-                }).finally(() => {
+                } finally {
+                    // --- 6. Cleanup ---
+                    document.body.removeChild(renderContainer);
                     generatePdfBtn.textContent = 'Generate PDF';
                     generatePdfBtn.disabled = false;
-                    // Revert background color by removing the inline style
-                    quoteOutput.style.backgroundColor = '';
-                });
+                }
             };
+
 
             // Adds a new row for an additional cost item in Step 3.
             const addCostRow = () => {
@@ -759,9 +849,4 @@
     </script>
 </body>
 </html>
-
-
-
-
-
 
