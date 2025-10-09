@@ -374,18 +374,33 @@
                         }
                     };
 
-                    // --- 1. Render and add the Quote Header ---
-                    const headerContainer = document.createElement('div');
-                    headerContainer.style.padding = '32px 32px 0 32px'; // Match p-8 top/sides
-                    headerContainer.appendChild(quoteOutput.querySelector('.flex.justify-between.items-start').cloneNode(true));
-                    headerContainer.appendChild(quoteOutput.querySelector('.grid.md\\:grid-cols-2').cloneNode(true));
-                    headerContainer.appendChild(quoteOutput.querySelector('h3.font-semibold').cloneNode(true));
+                    // --- 1. Render and add the top part of the Quote (Logo, Client Info) ---
+                    const topHeaderContainer = document.createElement('div');
+                    topHeaderContainer.style.padding = '32px 32px 0 32px'; // Match p-8 top/sides
+                    topHeaderContainer.appendChild(quoteOutput.querySelector('.flex.justify-between.items-start').cloneNode(true));
+                    topHeaderContainer.appendChild(quoteOutput.querySelector('.grid.md\\:grid-cols-2').cloneNode(true));
                     
-                    const headerPart = await getRenderedPart(headerContainer);
-                    pdf.addImage(headerPart.canvas.toDataURL('image/png'), 'PNG', margin, cursorY, contentWidth, headerPart.imgHeight);
-                    cursorY += headerPart.imgHeight;
+                    const topHeaderPart = await getRenderedPart(topHeaderContainer);
+                    pdf.addImage(topHeaderPart.canvas.toDataURL('image/png'), 'PNG', margin, cursorY, contentWidth, topHeaderPart.imgHeight);
+                    cursorY += topHeaderPart.imgHeight;
                     
-                    // --- 2. Render and add the Table Header ---
+                    // --- 2. Render and add the "Project Scope Breakdown:" heading ---
+                    const scopeHeadingEl = quoteOutput.querySelector('table.table-fixed').previousElementSibling;
+                    if (scopeHeadingEl && scopeHeadingEl.tagName === 'H3') {
+                        const scopeContainer = document.createElement('div');
+                        scopeContainer.style.padding = '0 32px';
+                        scopeContainer.appendChild(scopeHeadingEl.cloneNode(true));
+                        
+                        const scopePart = await getRenderedPart(scopeContainer);
+                        if (cursorY + scopePart.imgHeight > pdfHeight - margin) {
+                            pdf.addPage();
+                            cursorY = margin;
+                        }
+                        pdf.addImage(scopePart.canvas.toDataURL('image/png'), 'PNG', margin, cursorY, contentWidth, scopePart.imgHeight);
+                        cursorY += scopePart.imgHeight;
+                    }
+
+                    // --- 3. Render and cache the Table Header for reuse ---
                     const tableHeaderWrapper = document.createElement('div');
                     tableHeaderWrapper.style.padding = '0 32px';
                     const tempTableForHeader = document.createElement('table');
@@ -395,7 +410,7 @@
 
                     const tableHeaderPart = await getRenderedPart(tableHeaderWrapper);
                     tableHeaderCanvas = tableHeaderPart.canvas; // Store for reuse
-                    addTableHeader();
+                    addTableHeader(); // Add header to the first page
 
                     // --- 3. Group, measure, and render Table Rows ---
                     const rows = Array.from(quoteOutput.querySelectorAll('table tbody tr'));
@@ -854,4 +869,5 @@
     </script>
 </body>
 </html>
+
 
