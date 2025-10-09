@@ -176,13 +176,13 @@
 
                 <!-- Quote Items Table -->
                 <h3 class="font-semibold text-gray-700 mb-2">Project Scope Breakdown:</h3>
-                <table class="w-full mb-8">
+                <table class="w-full mb-8 table-fixed">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="text-left font-semibold p-3">Item / Description</th>
-                            <th class="text-right font-semibold p-3">Qty m²</th>
-                            <th class="text-right font-semibold p-3">Unit Price (per m²)</th>
-                            <th class="text-right font-semibold p-3">Line Total</th>
+                            <th class="w-1/2 text-left font-semibold p-3">Item / Description</th>
+                            <th class="w-1/6 text-right font-semibold p-3">Qty m²</th>
+                            <th class="w-1/6 text-right font-semibold p-3">Unit Price (per m²)</th>
+                            <th class="w-1/6 text-right font-semibold p-3">Line Total</th>
                         </tr>
                     </thead>
                     <tbody id="quote-items-body">
@@ -389,7 +389,7 @@
                     const tableHeaderWrapper = document.createElement('div');
                     tableHeaderWrapper.style.padding = '0 32px';
                     const tempTableForHeader = document.createElement('table');
-                    tempTableForHeader.className = 'w-full mb-8';
+                    tempTableForHeader.className = 'w-full mb-8 table-fixed';
                     tempTableForHeader.appendChild(quoteOutput.querySelector('table thead').cloneNode(true));
                     tableHeaderWrapper.appendChild(tempTableForHeader);
 
@@ -415,7 +415,12 @@
                         const groupWrapper = document.createElement('div');
                         groupWrapper.style.padding = '0 32px';
                         const tempTableForGroup = document.createElement('table');
-                        tempTableForGroup.className = 'w-full';
+                        tempTableForGroup.className = 'w-full table-fixed';
+                        // Add colgroup to enforce widths in PDF rendering
+                        const colgroup = document.createElement('colgroup');
+                        colgroup.innerHTML = '<col style="width: 50%"><col style="width: 16.66%"><col style="width: 16.66%"><col style="width: 16.66%">';
+                        tempTableForGroup.appendChild(colgroup);
+
                         const tempTbody = document.createElement('tbody');
                         group.forEach(row => tempTbody.appendChild(row.cloneNode(true)));
                         tempTableForGroup.appendChild(tempTbody);
@@ -688,7 +693,7 @@
                             <tr class="border-b">
                                 <td class="p-3 align-top">
                                     <p class="font-semibold">${areaDescription}</p>
-                                    <p class="text-sm text-gray-600">${detailedDescription}</p>
+                                    <p class="text-xs text-gray-600">${detailedDescription}</p>
                                 </td>
                                 <td class="text-right p-3 align-top">${sqm.toFixed(2)}</td>
                                 <td class="text-right p-3 align-top">${formatCurrency(finalPricePerSqm)}</td>
@@ -704,7 +709,7 @@
                             quoteItemsHTML += `
                                 <tr class="border-b bg-gray-50/50">
                                     <td class="p-3 align-top">
-                                        <p class="pl-4 text-gray-800">└ G5 base prepared for the installation of impact surfacing, including edge paving to ensure a clean and finished perimeter</p>
+                                        <p class="pl-4 text-gray-800 text-xs">└ G5 base prepared for the installation of impact surfacing, including edge paving to ensure a clean and finished perimeter</p>
                                     </td>
                                     <td class="text-right p-3 align-top">${sqm.toFixed(2)}</td>
                                     <td class="text-right p-3 align-top">${formatCurrency(basePrepCostPerSqm)}</td>
@@ -721,7 +726,7 @@
                             quoteItemsHTML += `
                                 <tr class="border-b bg-gray-50/50">
                                     <td class="p-3 align-top">
-                                        <p class="pl-4 text-gray-800">└ Installation of impact surfacing</p>
+                                        <p class="pl-4 text-gray-800 text-xs">└ Installation of impact surfacing</p>
                                     </td>
                                     <td class="text-right p-3 align-top">${sqm.toFixed(2)}</td>
                                     <td class="text-right p-3 align-top">${formatCurrency(installationCostPerSqm)}</td>
