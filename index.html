@@ -646,6 +646,7 @@
                                 <option value="550">R550.00</option>
                                 <option value="650">R650.00</option>
                             </select>
+                            <textarea class="form-input base-prep-desc hidden mt-2 text-sm" rows="3" placeholder="Describe the base preparation work...">G5 base prepared for the installation of impact surfacing, including edge paving to ensure a clean and finished perimeter</textarea>
                         </div>
                         <div class="md:col-span-2 grid grid-cols-2 gap-4 pt-2">
                              <div>
@@ -782,11 +783,12 @@
                         if (basePrepCostPerSqm > 0) {
                             const basePrepTotal = sqm * basePrepCostPerSqm;
                             subtotal += basePrepTotal;
+                            const basePrepDescription = area.querySelector('.base-prep-desc').value;
 
                             quoteItemsBody.innerHTML += `
                                 <tr class="border-b border-black bg-gray-50/50">
                                     <td class="p-3 align-top">
-                                        <p class="pl-4 text-gray-800 text-xs">└ G5 base prepared for the installation of impact surfacing, including edge paving to ensure a clean and finished perimeter</p>
+                                        <p class="pl-4 text-gray-800 text-xs">└ ${basePrepDescription}</p>
                                     </td>
                                     <td class="text-right p-3 align-top">${sqm.toFixed(2)}</td>
                                     <td class="text-right p-3 align-top">${formatCurrency(basePrepCostPerSqm)}</td>
@@ -896,6 +898,16 @@
                         updateColourOptions(e.target);
                     }
                     updateDescription(card);
+                }
+
+                if (e.target.matches('.base-prep-select')) {
+                    const card = e.target.closest('.area-card');
+                    const descTextarea = card.querySelector('.base-prep-desc');
+                    if (e.target.value !== '0') {
+                        descTextarea.classList.remove('hidden');
+                    } else {
+                        descTextarea.classList.add('hidden');
+                    }
                 }
             });
 
