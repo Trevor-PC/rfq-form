@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Playground Creations - Quoting Tool</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Image & PDF Generation Libraries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- Image & PDF Generation Libraries --><script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -86,15 +85,13 @@
 <body class="bg-gray-100 text-gray-800">
 
     <div class="container mx-auto p-4 md:p-8 max-w-4xl">
-        <!-- Header -->
-        <header class="text-center mb-8">
+        <!-- Header --><header class="text-center mb-8">
             <h1 class="text-3xl md:text-4xl font-bold text-blue-600">Playground Creations</h1>
             <p class="text-lg text-gray-600">Impact Attenuation Safety Flooring Quote Generator</p>
         </header>
 
         <main id="quote-form">
-            <!-- Section 1: Client and Site Details -->
-            <div class="bg-white p-6 rounded-xl shadow-md mb-6">
+            <!-- Section 1: Client and Site Details --><div class="bg-white p-6 rounded-xl shadow-md mb-6">
                 <h2 class="text-2xl font-semibold mb-4 border-b pb-2">Step 1: Client & Site Information</h2>
                 <div class="grid md:grid-cols-2 gap-4">
                     <div class="input-group">
@@ -102,8 +99,8 @@
                         <input type="text" id="clientName" class="form-input" placeholder="e.g., ABC Primary School">
                     </div>
                     <div class="input-group">
-                        <label for="clientContact" class="input-label">Client Contact (Email/Phone)</label>
-                        <input type="text" id="clientContact" class="form-input" placeholder="e.g., principal@abc.com">
+                        <label for="clientEmail" class="input-label">Email Address</label>
+                        <input type="email" id="clientEmail" class="form-input" placeholder="e.g., principal@abc.com" required>
                     </div>
                     <div class="input-group md:col-span-2">
                         <label for="siteLocation" class="input-label">Site Location / Address</label>
@@ -112,42 +109,35 @@
                 </div>
             </div>
 
-            <!-- Section 2: Area Specifications -->
-            <div class="bg-white p-6 rounded-xl shadow-md mb-6">
+            <!-- Section 2: Area Specifications --><div class="bg-white p-6 rounded-xl shadow-md mb-6">
                 <h2 class="text-2xl font-semibold mb-2">Step 2: Area & Flooring Details</h2>
                 <p class="text-gray-500 mb-4">Add each distinct area, specifying its size, required safety system, and color.</p>
                 <div id="areas-container">
-                    <!-- Dynamic area cards will be inserted here by JavaScript -->
-                </div>
+                    <!-- Dynamic area cards will be inserted here by JavaScript --></div>
                 <button id="add-area-btn" class="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">
                     + Add Another Area
                 </button>
             </div>
 
-            <!-- Section 3: Additional Costs -->
-            <div class="bg-white p-6 rounded-xl shadow-md mb-6">
+            <!-- Section 3: Additional Costs --><div class="bg-white p-6 rounded-xl shadow-md mb-6">
                 <h2 class="text-2xl font-semibold mb-4 border-b pb-2">Step 3: Additional Costs</h2>
                 <div id="additional-costs-container" class="space-y-4">
-                    <!-- Dynamic cost rows will be inserted here by JavaScript -->
-                </div>
+                    <!-- Dynamic cost rows will be inserted here by JavaScript --></div>
                 <button id="add-cost-btn" class="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">
                     + Add Another Cost
                 </button>
             </div>
 
-            <!-- Generate Quote Button -->
-            <div class="text-center">
+            <!-- Generate Quote Button --><div class="text-center">
                  <button id="generate-quote-btn" class="w-full md:w-auto bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-12 rounded-lg text-lg transition-transform hover:scale-105">
                     Generate Quote
                 </button>
             </div>
         </main>
         
-        <!-- Section 4: Generated Quote (hidden by default) -->
-        <div id="quote-output-container" class="hidden mt-8">
+        <!-- Section 4: Generated Quote (hidden by default) --><div id="quote-output-container" class="hidden mt-8">
             <div id="quote-output" class="bg-white p-8 rounded-xl shadow-lg border">
-                <!-- Quote Header -->
-                <div class="flex justify-between items-start border-b-2 pb-6 mb-6">
+                <!-- Quote Header --><div class="flex justify-between items-start border-b-2 border-black pb-6 mb-6">
                     <div>
                         <h2 class="text-3xl font-bold text-blue-600">Playground Creations</h2>
                         <p class="text-gray-500">Where Play Meets Safety</p>
@@ -158,12 +148,11 @@
                     </div>
                 </div>
 
-                <!-- Client and Company Info -->
-                <div class="grid md:grid-cols-2 gap-8 mb-8">
+                <!-- Client and Company Info --><div class="grid md:grid-cols-2 gap-8 mb-8">
                     <div>
                         <h3 class="font-semibold text-gray-700 mb-2">Prepared For:</h3>
                         <p id="quote-client-name" class="font-bold"></p>
-                        <p id="quote-client-contact"></p>
+                        <p id="quote-client-email"></p>
                         <p id="quote-site-location"></p>
                     </div>
                     <div class="md:text-right">
@@ -174,8 +163,7 @@
                     </div>
                 </div>
 
-                <!-- Quote Items Table -->
-                <h3 class="font-semibold text-gray-700 mb-2">Project Scope Breakdown:</h3>
+                <!-- Quote Items Table --><h3 class="font-semibold text-gray-700 mb-2">Project Scope Breakdown:</h3>
                 <table class="w-full mb-8 table-fixed">
                     <thead class="bg-gray-50">
                         <tr>
@@ -186,12 +174,10 @@
                         </tr>
                     </thead>
                     <tbody id="quote-items-body">
-                       <!-- Items will be injected here by JavaScript -->
-                    </tbody>
+                       <!-- Items will be injected here by JavaScript --></tbody>
                 </table>
                 
-                <!-- Totals Section -->
-                <div class="flex justify-end">
+                <!-- Totals Section --><div class="flex justify-end">
                     <div class="w-full md:w-1/2">
                         <div class="flex justify-between py-2">
                             <span class="font-semibold text-gray-600">Subtotal:</span>
@@ -201,21 +187,19 @@
                             <span class="font-semibold text-gray-600">VAT (15%):</span>
                             <span id="quote-vat"></span>
                         </div>
-                        <div class="flex justify-between py-3 border-t-2 mt-2">
+                        <div class="flex justify-between py-3 border-t-2 border-black mt-2">
                             <span class="font-bold text-xl">Quote Total:</span>
                             <span id="quote-total" class="font-bold text-xl text-blue-600"></span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Terms and Conditions -->
-                 <div class="mt-8 text-sm text-gray-500">
+                <!-- Terms and Conditions --><div class="mt-8 text-sm text-gray-500">
                     <h4 class="font-semibold text-gray-600 mb-2">Terms & Conditions:</h4>
                     <p>This quote is valid for 30 days. Pricing includes supply and installation of specified safety flooring. Site must be cleared and level prior to installation. A 70% deposit is required to confirm the order.</p>
                 </div>
             </div>
-            <!-- Action buttons for the generated quote -->
-            <div id="quote-actions" class="mt-6 text-center">
+            <!-- Action buttons for the generated quote --><div id="quote-actions" class="mt-6 text-center">
                 <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
                     <button id="edit-quote-btn" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-6 rounded-lg w-full sm:w-auto">Edit Quote</button>
                     <button id="generate-pdf-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg w-full sm:w-auto">Generate PDF</button>
@@ -225,8 +209,7 @@
         </div>
     </div>
 
-    <!-- Modal for validation alerts -->
-    <div id="alert-modal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center z-50">
+    <!-- Modal for validation alerts --><div id="alert-modal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center z-50">
         <div class="relative mx-auto p-5 border w-full max-w-sm shadow-lg rounded-md bg-white">
             <div class="mt-3 text-center">
                 <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100">
@@ -272,7 +255,8 @@
                 'flexiplay_85': { name: 'FlexiPlay 85 (CFH 3.0m)', pricePerSqm: 1850.00 },
                 'flexiturf_40': { name: 'FlexiTurf 40 (CFH 1.6m)' },
                 'flexiturf_60': { name: 'FlexiTurf 60 (CFH 1.8m)' },
-                'flexiturf_70': { name: 'FlexiTurf 70 (CFH 2.4m)' }
+                'flexiturf_70': { name: 'FlexiTurf 70 (CFH 2.4m)' },
+                'artificial_turf': { name: 'Artificial Turf', pricePerSqm: 0 } // Price is determined by type
             };
             const turfPricing = {
                 'flexiturf_40_synsport_eco': 929.79,
@@ -298,7 +282,9 @@
                 'flexiturf_70_synsport_eco': "FlexiTurf70: 70mm Shockpad, Turf Type: 25mm Eco Green, Critical Fall Height (CFH) 2.4m. An allowance of 7% wastage has been included.",
                 'flexiturf_40_easigrass': "FlexiTurf40: 40mm Shockpad, Turf Type: 25mm Prem Green, Critical Fall Height (CFH) 1.6m. An allowance of 7% wastage has been included.",
                 'flexiturf_60_easigrass': "FlexiTurf60: 60mm Shockpad, Turf Type: 25mm Prem Green, Critical Fall Height (CFH) 1.8m. An allowance of 7% wastage has been included.",
-                'flexiturf_70_easigrass': "FlexiTurf70: 70mm Shockpad, Turf Type: 25mm Prem Green, Critical Fall Height (CFH) 2.4m. An allowance of 7% wastage has been included."
+                'flexiturf_70_easigrass': "FlexiTurf70: 70mm Shockpad, Turf Type: 25mm Prem Green, Critical Fall Height (CFH) 2.4m. An allowance of 7% wastage has been included.",
+                'artificial_turf_synsport_eco': "Eco Artificial Turf Surfacing, 25mm",
+                'artificial_turf_easigrass': "Premium Artificial Turf Surfacing, 25mm"
             };
 
             // --- FUNCTIONS ---
@@ -516,27 +502,60 @@
                 `;
                 additionalCostsContainer.appendChild(row);
             };
+
+            // Updates the default description in the custom description textarea.
+            const updateDescription = (card) => {
+                const systemKey = card.querySelector('.system-select').value;
+                const textarea = card.querySelector('.custom-desc-area');
+                let defaultDescription = '';
+
+                if (systemKey.startsWith('flexiplay') || systemKey.startsWith('flexiturf') || systemKey === 'artificial_turf') {
+                    const colorKey = card.querySelector('.color-select').value;
+                    const descriptionKey = `${systemKey}_${colorKey}`;
+                    defaultDescription = systemDescriptions[descriptionKey];
+                    
+                    if (!defaultDescription && systemKey.startsWith('flexiturf')) { // Fallback for original turf
+                        const selectedSystem = systemPricing[systemKey];
+                        const systemName = selectedSystem.name;
+                        const colorName = card.querySelector(`.color-select option[value="${colorKey}"]`).textContent;
+                        defaultDescription = `${systemName}, Turf Type: ${colorName}. An allowance of 7% wastage has been included.`;
+                    }
+                }
+                
+                textarea.value = defaultDescription || '';
+            };
             
             // Dynamically updates the color options based on the selected safety system.
             const updateColorOptions = (systemSelectElement) => {
                 const card = systemSelectElement.closest('.area-card');
                 if (!card) return;
 
+                const colorContainer = card.querySelector('.color-container');
                 const colorSelect = card.querySelector('.color-select');
                 const selectedSystem = systemSelectElement.value;
                 
                 colorSelect.innerHTML = ''; // Clear existing options
 
                 if (selectedSystem.startsWith('flexiplay')) {
+                    colorContainer.classList.remove('hidden');
                     colorSelect.innerHTML = `
                         <option value="black">Black</option>
-                        <option value="color">Color (+10%)</option>
+                        <option value="color">Color</option>
                     `;
                 } else if (selectedSystem.startsWith('flexiturf')) {
+                    colorContainer.classList.remove('hidden');
                     colorSelect.innerHTML = `
                         <option value="easigrass">Easigrass</option>
                         <option value="synsport_eco">SynSport Eco</option>
                     `;
+                } else if (selectedSystem === 'artificial_turf') {
+                     colorContainer.classList.remove('hidden');
+                    colorSelect.innerHTML = `
+                        <option value="synsport_eco">SynSport Eco</option>
+                        <option value="easigrass">Easigrass</option>
+                    `;
+                } else {
+                    colorContainer.classList.add('hidden');
                 }
             };
 
@@ -565,13 +584,13 @@
                                 <option value="flexiturf_40">FlexiTurf 40 (CFH 1.6m)</option>
                                 <option value="flexiturf_60">FlexiTurf 60 (CFH 1.8m)</option>
                                 <option value="flexiturf_70">FlexiTurf 70 (CFH 2.4m)</option>
+                                <option value="artificial_turf">Artificial Turf</option>
                             </select>
                         </div>
-                        <div>
+                        <div class="color-container">
                             <label class="input-label text-sm">Flooring Colour</label>
                             <select class="form-input color-select text-sm">
-                                <!-- Options will be dynamically populated -->
-                            </select>
+                                <!-- Options will be dynamically populated --></select>
                         </div>
                         <div>
                             <label class="input-label text-sm">Installation (per m²)</label>
@@ -609,14 +628,17 @@
                             <input type="number" class="form-input area-sqm text-sm" placeholder="Enter total area directly">
                         </div>
                     </div>
+                    <div class="mt-4 pt-4 border-t border-gray-200">
+                        <button type="button" class="text-blue-600 hover:text-blue-800 text-sm font-medium toggle-desc-btn">Edit System Description</button>
+                        <textarea class="form-input custom-desc-area hidden mt-2 text-sm" rows="4"></textarea>
+                    </div>
                 `;
                 areasContainer.appendChild(card);
 
-                // Immediately update the color options for the newly added card based on its default system
+                // Immediately update the color and description for the newly added card
                 const newSystemSelect = card.querySelector('.system-select');
-                if(newSystemSelect) {
-                    updateColorOptions(newSystemSelect);
-                }
+                updateColorOptions(newSystemSelect);
+                updateDescription(card);
             };
 
             // Handles automatic calculation between length/width and total area.
@@ -646,11 +668,16 @@
             const generateQuote = () => {
                 // --- 1. GATHER & VALIDATE DATA ---
                 const clientName = document.getElementById('clientName').value;
-                const clientContact = document.getElementById('clientContact').value;
+                const clientEmail = document.getElementById('clientEmail').value;
                 const siteLocation = document.getElementById('siteLocation').value;
                 
-                if (!clientName || !siteLocation) {
-                    showModal('Please fill in at least the Client Name and Site Location.');
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!clientName || !siteLocation || !clientEmail) {
+                    showModal('Please fill in the Client Name, Site Location, and Email Address.');
+                    return;
+                }
+                if (!emailRegex.test(clientEmail)) {
+                    showModal('Please enter a valid email address.');
                     return;
                 }
                 
@@ -672,40 +699,43 @@
                         totalSqm += sqm;
 
                         const selectedSystemKey = area.querySelector('.system-select').value;
-                        const selectedColorKey = area.querySelector('.color-select').value;
                         const areaDescription = area.querySelector('.area-desc').value || 'Unnamed Area';
                         const installationCostPerSqm = parseFloat(area.querySelector('.installation-select').value) || 0;
                         const basePrepCostPerSqm = parseFloat(area.querySelector('.base-prep-select').value) || 0;
-
-                        // --- Material Calculation ---
                         const selectedSystem = systemPricing[selectedSystemKey];
                         let finalPricePerSqm;
 
                         if (selectedSystemKey.startsWith('flexiturf')) {
+                            const selectedColorKey = area.querySelector('.color-select').value;
                             const priceKey = `${selectedSystemKey}_${selectedColorKey}`;
                             finalPricePerSqm = turfPricing[priceKey] || 0;
-                        } else { // Existing FlexiPlay logic
+                        } else if (selectedSystemKey.startsWith('flexiplay')) {
+                            const selectedColorKey = area.querySelector('.color-select').value;
                             let basePricePerSqm = selectedSystem.pricePerSqm;
                             const surchargePercentage = colorSurcharges[selectedColorKey] || 0;
                             const colorSurcharge = basePricePerSqm * surchargePercentage;
                             finalPricePerSqm = basePricePerSqm + colorSurcharge;
+                        } else if (selectedSystemKey === 'artificial_turf') {
+                            const selectedColorKey = area.querySelector('.color-select').value;
+                            if(selectedColorKey === 'synsport_eco') {
+                                finalPricePerSqm = 250.00;
+                            } else { // easigrass
+                                finalPricePerSqm = 350.00;
+                            }
+                        } else {
+                            finalPricePerSqm = selectedSystem.pricePerSqm || 0;
                         }
+
                         const materialLineTotal = sqm * finalPricePerSqm;
                         
                         subtotal += materialLineTotal;
 
-                        const descriptionKey = `${selectedSystemKey}_${selectedColorKey}`;
-                        let detailedDescription = systemDescriptions[descriptionKey];
-
-                        if (!detailedDescription) {
-                            const systemName = selectedSystem.name;
-                            const colorName = area.querySelector(`.color-select option[value="${selectedColorKey}"]`).textContent;
-                            detailedDescription = `${systemName}, Turf Type: ${colorName}. An allowance of 7% wastage has been included.`;
-                        }
+                        // Get the description from the textarea (it's always populated with default or edited text)
+                        const detailedDescription = area.querySelector('.custom-desc-area').value;
                         
                         // --- Add Material Line to Quote ---
                         quoteItemsHTML += `
-                            <tr class="border-b">
+                            <tr class="border-b border-black">
                                 <td class="p-3 align-top">
                                     <p class="font-semibold">${areaDescription}</p>
                                     <p class="text-xs text-gray-600">${detailedDescription}</p>
@@ -722,7 +752,7 @@
                             subtotal += basePrepTotal;
 
                             quoteItemsHTML += `
-                                <tr class="border-b bg-gray-50/50">
+                                <tr class="border-b border-black bg-gray-50/50">
                                     <td class="p-3 align-top">
                                         <p class="pl-4 text-gray-800 text-xs">└ G5 base prepared for the installation of impact surfacing, including edge paving to ensure a clean and finished perimeter</p>
                                     </td>
@@ -739,7 +769,7 @@
                             subtotal += installationTotal;
 
                             quoteItemsHTML += `
-                                <tr class="border-b bg-gray-50/50">
+                                <tr class="border-b border-black bg-gray-50/50">
                                     <td class="p-3 align-top">
                                         <p class="pl-4 text-gray-800 text-xs">└ Installation of impact surfacing</p>
                                     </td>
@@ -776,7 +806,7 @@
                         const total = qty * price;
                         subtotal += total;
                         quoteItemsHTML += `
-                            <tr class="border-b">
+                            <tr class="border-b border-black">
                                 <td class="p-3 align-top">
                                     <p class="font-semibold">${description}</p>
                                 </td>
@@ -806,7 +836,7 @@
                 document.getElementById('quote-id').textContent = currentQuoteId;
                 document.getElementById('quote-date').textContent = new Date().toLocaleDateString('en-ZA');
                 document.getElementById('quote-client-name').textContent = clientName;
-                document.getElementById('quote-client-contact').textContent = clientContact;
+                document.getElementById('quote-client-email').textContent = clientEmail;
                 document.getElementById('quote-site-location').textContent = siteLocation;
 
                 quoteItemsBody.innerHTML = quoteItemsHTML;
@@ -831,8 +861,12 @@
             
             // Use event delegation for dynamically added elements
             areasContainer.addEventListener('change', (e) => {
-                if (e.target.matches('.system-select')) {
-                    updateColorOptions(e.target);
+                if (e.target.matches('.system-select') || e.target.matches('.color-select')) {
+                    const card = e.target.closest('.area-card');
+                    if (e.target.matches('.system-select')) {
+                        updateColorOptions(e.target);
+                    }
+                    updateDescription(card);
                 }
             });
 
@@ -840,6 +874,11 @@
                 if (e.target.matches('.remove-btn')) {
                     const cardIdToRemove = e.target.dataset.remove;
                     document.getElementById(cardIdToRemove).remove();
+                }
+                if (e.target.matches('.toggle-desc-btn')) {
+                    const card = e.target.closest('.area-card');
+                    const textarea = card.querySelector('.custom-desc-area');
+                    textarea.classList.toggle('hidden');
                 }
             });
             areasContainer.addEventListener('input', handleAreaCalculation);
@@ -869,5 +908,4 @@
     </script>
 </body>
 </html>
-
 
