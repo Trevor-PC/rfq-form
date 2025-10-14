@@ -596,24 +596,37 @@
                             <label class="input-label text-sm">Area Description</label>
                             <input type="text" class="form-input area-desc text-sm" placeholder="e.g., Main Play Zone" value="Area ${areaCount}">
                         </div>
-                        <div>
-                            <label class="input-label text-sm">Safety System (CFH)</label>
-                            <select class="form-input system-select text-sm">
-                                <option value="flexiplay_35">FlexiPlay 35 (CFH 1.3m)</option>
-                                <option value="flexiplay_55" selected>FlexiPlay 55 (CFH 2.4m)</option>
-                                <option value="flexiplay_85">FlexiPlay 85 (CFH 3.0m)</option>
-                                <option value="flexiturf_40">FlexiTurf 40 (CFH 1.6m)</option>
-                                <option value="flexiturf_60">FlexiTurf 60 (CFH 1.8m)</option>
-                                <option value="flexiturf_70">FlexiTurf 70 (CFH 2.4m)</option>
-                                <option value="artificial_turf">Artificial Turf</option>
-                                <option value="black_crumb_15mm">15mm Black Rubber Crumb</option>
-                            </select>
+
+                        <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-x-4">
+                            <div>
+                                <label class="input-label text-sm">Safety System (CFH)</label>
+                                <select class="form-input system-select text-sm">
+                                    <option value="flexiplay_35">FlexiPlay 35 (CFH 1.3m)</option>
+                                    <option value="flexiplay_55" selected>FlexiPlay 55 (CFH 2.4m)</option>
+                                    <option value="flexiplay_85">FlexiPlay 85 (CFH 3.0m)</option>
+                                    <option value="flexiturf_40">FlexiTurf 40 (CFH 1.6m)</option>
+                                    <option value="flexiturf_60">FlexiTurf 60 (CFH 1.8m)</option>
+                                    <option value="flexiturf_70">FlexiTurf 70 (CFH 2.4m)</option>
+                                    <option value="artificial_turf">Artificial Turf</option>
+                                    <option value="black_crumb_15mm">15mm Black Rubber Crumb</option>
+                                </select>
+                            </div>
+                            <div class="color-container">
+                                <label class="input-label text-sm">Flooring Colour</label>
+                                <select class="form-input color-select text-sm">
+                                    <!-- Options will be dynamically populated --></select>
+                            </div>
+                            <div>
+                                <label class="input-label text-sm">Material Wastage Markup</label>
+                                <select class="form-input wastage-markup-select text-sm">
+                                    <option value="0" selected>None</option>
+                                    <option value="0.05">5%</option>
+                                    <option value="0.10">10%</option>
+                                    <option value="0.15">15%</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="color-container">
-                            <label class="input-label text-sm">Flooring Colour</label>
-                            <select class="form-input color-select text-sm">
-                                <!-- Options will be dynamically populated --></select>
-                        </div>
+
                         <div>
                             <label class="input-label text-sm">Installation (per m²)</label>
                             <select class="form-input installation-select text-sm">
@@ -705,7 +718,6 @@
                 
                 const quoteItemsBody = document.getElementById('quote-items-body');
                 quoteItemsBody.innerHTML = ''; 
-                let quoteItemsHTML = '';
                 let subtotal = 0;
                 let totalSqm = 0;
 
@@ -718,8 +730,9 @@
                 areaElements.forEach(area => {
                     const sqm = parseFloat(area.querySelector('.area-sqm').value) || 0;
                     if (sqm > 0) {
-                        totalSqm += sqm;
-
+                        const wastagePercent = parseFloat(area.querySelector('.wastage-markup-select').value) || 0;
+                        const materialSqm = sqm * (1 + wastagePercent);
+                        
                         const selectedSystemKey = area.querySelector('.system-select').value;
                         const areaDescription = area.querySelector('.area-desc').value || 'Unnamed Area';
                         const installationCostPerSqm = parseFloat(area.querySelector('.installation-select').value) || 0;
@@ -745,7 +758,7 @@
                             finalPricePerSqm = selectedSystem.pricePerSqm || 0;
                         }
 
-                        const materialLineTotal = sqm * finalPricePerSqm;
+                        const materialLineTotal = materialSqm * finalPricePerSqm;
                         
                         subtotal += materialLineTotal;
 
@@ -753,13 +766,13 @@
                         const detailedDescription = area.querySelector('.custom-desc-area').value;
                         
                         // --- Add Material Line to Quote ---
-                        quoteItemsHTML += `
+                        quoteItemsBody.innerHTML += `
                             <tr class="border-b border-black">
                                 <td class="p-3 align-top">
                                     <p class="font-semibold">${areaDescription}</p>
                                     <p class="text-xs text-gray-600">${detailedDescription}</p>
                                 </td>
-                                <td class="text-right p-3 align-top">${sqm.toFixed(2)}</td>
+                                <td class="text-right p-3 align-top">${materialSqm.toFixed(2)}</td>
                                 <td class="text-right p-3 align-top">${formatCurrency(finalPricePerSqm)}</td>
                                 <td class="text-right p-3 align-top font-semibold">${formatCurrency(materialLineTotal)}</td>
                             </tr>
@@ -770,7 +783,7 @@
                             const basePrepTotal = sqm * basePrepCostPerSqm;
                             subtotal += basePrepTotal;
 
-                            quoteItemsHTML += `
+                            quoteItemsBody.innerHTML += `
                                 <tr class="border-b border-black bg-gray-50/50">
                                     <td class="p-3 align-top">
                                         <p class="pl-4 text-gray-800 text-xs">└ G5 base prepared for the installation of impact surfacing, including edge paving to ensure a clean and finished perimeter</p>
@@ -787,7 +800,7 @@
                             const installationTotal = sqm * installationCostPerSqm;
                             subtotal += installationTotal;
 
-                            quoteItemsHTML += `
+                            quoteItemsBody.innerHTML += `
                                 <tr class="border-b border-black bg-gray-50/50">
                                     <td class="p-3 align-top">
                                         <p class="pl-4 text-gray-800 text-xs">└ Installation of impact surfacing</p>
@@ -824,7 +837,7 @@
 
                         const total = qty * price;
                         subtotal += total;
-                        quoteItemsHTML += `
+                        quoteItemsBody.innerHTML += `
                             <tr class="border-b border-black">
                                 <td class="p-3 align-top">
                                     <p class="font-semibold">${description}</p>
@@ -837,12 +850,11 @@
                     }
                 });
 
-                const hasAreaItems = totalSqm > 0;
-                
-                if (!hasAreaItems && !hasAdditionalCosts) {
-                    showModal('Please enter details for at least one area, or add at least one additional cost.');
+                if (areaElements.length === 0 && !hasAdditionalCosts) {
+                    showModal('Please add at least one area or one additional cost to generate a quote.');
                     return;
                 }
+
 
                 // --- 2. CALCULATE TOTALS ---
                 const vat = subtotal * 0.15;
@@ -857,8 +869,6 @@
                 document.getElementById('quote-client-name').textContent = clientName;
                 document.getElementById('quote-client-email').textContent = clientEmail;
                 document.getElementById('quote-site-location').textContent = siteLocation;
-
-                quoteItemsBody.innerHTML = quoteItemsHTML;
 
                 document.getElementById('quote-subtotal').textContent = formatCurrency(subtotal);
                 document.getElementById('quote-vat').textContent = formatCurrency(vat);
