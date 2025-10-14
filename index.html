@@ -111,7 +111,7 @@
 
             <!-- Section 2: Area Specifications --><div class="bg-white p-6 rounded-xl shadow-md mb-6">
                 <h2 class="text-2xl font-semibold mb-2">Step 2: Area & Flooring Details</h2>
-                <p class="text-gray-500 mb-4">Add each distinct area, specifying its size, required safety system, and color.</p>
+                <p class="text-gray-500 mb-4">Add each distinct area, specifying its size, required safety system, and colour.</p>
                 <div id="areas-container">
                     <!-- Dynamic area cards will be inserted here by JavaScript --></div>
                 <button id="add-area-btn" class="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">
@@ -250,32 +250,48 @@
             let currentQuoteId = null; // To persist quote ID during an edit session
             // All pricing is stored here for easy updates. Prices are ex. VAT.
             const systemPricing = {
-                'flexiplay_35': { name: 'FlexiPlay 35 (CFH 1.3m)', pricePerSqm: 1150.00 },
-                'flexiplay_55': { name: 'FlexiPlay 55 (CFH 2.4m)', pricePerSqm: 1500.00 },
-                'flexiplay_85': { name: 'FlexiPlay 85 (CFH 3.0m)', pricePerSqm: 1850.00 },
+                'flexiplay_35': { 
+                    name: 'FlexiPlay 35 (CFH 1.3m)', 
+                    pricePerSqm: {
+                        black: 723.76,
+                        color: 1671.08
+                    } 
+                },
+                'flexiplay_55': { 
+                    name: 'FlexiPlay 55 (CFH 2.4m)',
+                    pricePerSqm: {
+                        black: 889.58,
+                        color: 1857.00
+                    }
+                },
+                'flexiplay_85': { 
+                    name: 'FlexiPlay 85 (CFH 3.0m)',
+                    pricePerSqm: {
+                        black: 1150.88,
+                        color: 2098.20
+                    }
+                },
                 'flexiturf_40': { name: 'FlexiTurf 40 (CFH 1.6m)' },
                 'flexiturf_60': { name: 'FlexiTurf 60 (CFH 1.8m)' },
                 'flexiturf_70': { name: 'FlexiTurf 70 (CFH 2.4m)' },
-                'artificial_turf': { name: 'Artificial Turf', pricePerSqm: 0 } // Price is determined by type
+                'artificial_turf': { name: 'Artificial Turf', pricePerSqm: 0 }, // Price is determined by type
+                'black_crumb_15mm': { name: '15mm Black Rubber Crumb', pricePerSqm: 427.28 }
             };
             const turfPricing = {
-                'flexiturf_40_synsport_eco': 929.79,
-                'flexiturf_60_synsport_eco': 1094.25,
-                'flexiturf_70_synsport_eco': 1217.10,
-                'flexiturf_40_easigrass': 1117.29,
-                'flexiturf_60_easigrass': 1281.75,
-                'flexiturf_70_easigrass': 1404.60
-            };
-            const colorSurcharges = {
-                'color': 0.10, // 10% surcharge for the generic "Color" option with FlexiPlay
+                'flexiturf_40_synsport_eco': 897.68,
+                'flexiturf_60_synsport_eco': 978.00,
+                'flexiturf_70_synsport_eco': 1098.60,
+                'flexiturf_40_easigrass': 1085.28,
+                'flexiturf_60_easigrass': 1165.50,
+                'flexiturf_70_easigrass': 1286.10
             };
 
             const systemDescriptions = {
-                'flexiplay_35_color': "FlexiPlay35: 20mm Shockpad, 15mm TPV (Thermoplastic Vulcanizate) Color Rubber Crumb (Color to be confirmed), Critical Fall Height (CFH) 1.3m. An allowance of 7% wastage has been included.",
+                'flexiplay_35_color': "FlexiPlay35: 20mm Shockpad, 15mm TPV (Thermoplastic Vulcanizate) Colour Rubber Crumb (Colour to be confirmed), Critical Fall Height (CFH) 1.3m. An allowance of 7% wastage has been included.",
                 'flexiplay_35_black': "FlexiPlay35: 20mm Shockpad, 15mm TPV (Thermoplastic Vulcanizate) Black Rubber Crumb, Critical Fall Height (CFH) 1.3m. An allowance of 7% wastage has been included.",
-                'flexiplay_55_color': "FlexiPlay55: 40mm Shockpad, 15mm TPV (Thermoplastic Vulcanizate) Color Rubber Crumb, (Color to be confirmed) Critical Fall Height (CFH) 2.4m. An allowance of 7% wastage has been included.",
+                'flexiplay_55_color': "FlexiPlay55: 40mm Shockpad, 15mm TPV (Thermoplastic Vulcanizate) Colour Rubber Crumb, (Colour to be confirmed) Critical Fall Height (CFH) 2.4m. An allowance of 7% wastage has been included.",
                 'flexiplay_55_black': "FlexiPlay55: 40mm Shockpad, 15mm TPV (Thermoplastic Vulcanizate) Black Rubber Crumb, Critical Fall Height (CFH) 2.4m. An allowance of 7% wastage has been included.",
-                'flexiplay_85_color': "FlexiPlay85: 70mm Shockpad, 15mm TPV (Thermoplastic Vulcanizate) Color Rubber Crumb, (Color to be confirmed) Critical Fall Height (CFH) 3.0m. An allowance of 7% wastage has been included.",
+                'flexiplay_85_color': "FlexiPlay85: 70mm Shockpad, 15mm TPV (Thermoplastic Vulcanizate) Colour Rubber Crumb, (Colour to be confirmed) Critical Fall Height (CFH) 3.0m. An allowance of 7% wastage has been included.",
                 'flexiplay_85_black': "FlexiPlay85: 70mm Shockpad, 15mm TPV (Thermoplastic Vulcanizate) Black Rubber Crumb, Critical Fall Height (CFH) 3.0m. An allowance of 7% wastage has been included.",
                 'flexiturf_40_synsport_eco': "FlexiTurf40: 40mm Shockpad, Turf Type: 25mm Eco Green, Critical Fall Height (CFH) 1.6m. An allowance of 7% wastage has been included.",
                 'flexiturf_60_synsport_eco': "FlexiTurf60: 60mm Shockpad, Turf Type: 25mm Eco Green, Critical Fall Height (CFH) 1.8m. An allowance of 7% wastage has been included.",
@@ -284,7 +300,8 @@
                 'flexiturf_60_easigrass': "FlexiTurf60: 60mm Shockpad, Turf Type: 25mm Prem Green, Critical Fall Height (CFH) 1.8m. An allowance of 7% wastage has been included.",
                 'flexiturf_70_easigrass': "FlexiTurf70: 70mm Shockpad, Turf Type: 25mm Prem Green, Critical Fall Height (CFH) 2.4m. An allowance of 7% wastage has been included.",
                 'artificial_turf_synsport_eco': "Eco Artificial Turf Surfacing, 25mm",
-                'artificial_turf_easigrass': "Premium Artificial Turf Surfacing, 25mm"
+                'artificial_turf_easigrass': "Premium Artificial Turf Surfacing, 25mm",
+                'black_crumb_15mm_black': "15mm Black Rubber Crumb only no shock pad"
             };
 
             // --- FUNCTIONS ---
@@ -509,7 +526,7 @@
                 const textarea = card.querySelector('.custom-desc-area');
                 let defaultDescription = '';
 
-                if (systemKey.startsWith('flexiplay') || systemKey.startsWith('flexiturf') || systemKey === 'artificial_turf') {
+                if (systemKey.startsWith('flexiplay') || systemKey.startsWith('flexiturf') || systemKey === 'artificial_turf' || systemKey === 'black_crumb_15mm') {
                     const colorKey = card.querySelector('.color-select').value;
                     const descriptionKey = `${systemKey}_${colorKey}`;
                     defaultDescription = systemDescriptions[descriptionKey];
@@ -526,36 +543,40 @@
             };
             
             // Dynamically updates the color options based on the selected safety system.
-            const updateColorOptions = (systemSelectElement) => {
+            const updateColourOptions = (systemSelectElement) => {
                 const card = systemSelectElement.closest('.area-card');
                 if (!card) return;
 
-                const colorContainer = card.querySelector('.color-container');
-                const colorSelect = card.querySelector('.color-select');
+                const colourContainer = card.querySelector('.color-container');
+                const colourSelect = card.querySelector('.color-select');
                 const selectedSystem = systemSelectElement.value;
                 
-                colorSelect.innerHTML = ''; // Clear existing options
+                colourSelect.innerHTML = ''; // Clear existing options
 
                 if (selectedSystem.startsWith('flexiplay')) {
-                    colorContainer.classList.remove('hidden');
-                    colorSelect.innerHTML = `
+                    colourContainer.classList.remove('hidden');
+                    colourSelect.innerHTML = `
                         <option value="black">Black</option>
-                        <option value="color">Color</option>
+                        <option value="color">Colour</option>
                     `;
                 } else if (selectedSystem.startsWith('flexiturf')) {
-                    colorContainer.classList.remove('hidden');
-                    colorSelect.innerHTML = `
+                    colourContainer.classList.remove('hidden');
+                    colourSelect.innerHTML = `
                         <option value="easigrass">Easigrass</option>
                         <option value="synsport_eco">SynSport Eco</option>
                     `;
                 } else if (selectedSystem === 'artificial_turf') {
-                     colorContainer.classList.remove('hidden');
-                    colorSelect.innerHTML = `
+                     colourContainer.classList.remove('hidden');
+                    colourSelect.innerHTML = `
                         <option value="synsport_eco">SynSport Eco</option>
                         <option value="easigrass">Easigrass</option>
                     `;
-                } else {
-                    colorContainer.classList.add('hidden');
+                } else if (selectedSystem === 'black_crumb_15mm') {
+                    colourContainer.classList.remove('hidden');
+                    colourSelect.innerHTML = `<option value="black">Black</option>`;
+                }
+                else {
+                    colourContainer.classList.add('hidden');
                 }
             };
 
@@ -585,6 +606,7 @@
                                 <option value="flexiturf_60">FlexiTurf 60 (CFH 1.8m)</option>
                                 <option value="flexiturf_70">FlexiTurf 70 (CFH 2.4m)</option>
                                 <option value="artificial_turf">Artificial Turf</option>
+                                <option value="black_crumb_15mm">15mm Black Rubber Crumb</option>
                             </select>
                         </div>
                         <div class="color-container">
@@ -635,9 +657,9 @@
                 `;
                 areasContainer.appendChild(card);
 
-                // Immediately update the color and description for the newly added card
+                // Immediately update the colour and description for the newly added card
                 const newSystemSelect = card.querySelector('.system-select');
-                updateColorOptions(newSystemSelect);
+                updateColourOptions(newSystemSelect);
                 updateDescription(card);
             };
 
@@ -706,21 +728,18 @@
                         let finalPricePerSqm;
 
                         if (selectedSystemKey.startsWith('flexiturf')) {
-                            const selectedColorKey = area.querySelector('.color-select').value;
-                            const priceKey = `${selectedSystemKey}_${selectedColorKey}`;
+                            const selectedColourKey = area.querySelector('.color-select').value;
+                            const priceKey = `${selectedSystemKey}_${selectedColourKey}`;
                             finalPricePerSqm = turfPricing[priceKey] || 0;
                         } else if (selectedSystemKey.startsWith('flexiplay')) {
-                            const selectedColorKey = area.querySelector('.color-select').value;
-                            let basePricePerSqm = selectedSystem.pricePerSqm;
-                            const surchargePercentage = colorSurcharges[selectedColorKey] || 0;
-                            const colorSurcharge = basePricePerSqm * surchargePercentage;
-                            finalPricePerSqm = basePricePerSqm + colorSurcharge;
+                            const selectedColourKey = area.querySelector('.color-select').value;
+                            finalPricePerSqm = selectedSystem.pricePerSqm[selectedColourKey] || 0;
                         } else if (selectedSystemKey === 'artificial_turf') {
-                            const selectedColorKey = area.querySelector('.color-select').value;
-                            if(selectedColorKey === 'synsport_eco') {
-                                finalPricePerSqm = 250.00;
+                            const selectedColourKey = area.querySelector('.color-select').value;
+                            if(selectedColourKey === 'synsport_eco') {
+                                finalPricePerSqm = 232.50;
                             } else { // easigrass
-                                finalPricePerSqm = 350.00;
+                                finalPricePerSqm = 630.00;
                             }
                         } else {
                             finalPricePerSqm = selectedSystem.pricePerSqm || 0;
@@ -864,7 +883,7 @@
                 if (e.target.matches('.system-select') || e.target.matches('.color-select')) {
                     const card = e.target.closest('.area-card');
                     if (e.target.matches('.system-select')) {
-                        updateColorOptions(e.target);
+                        updateColourOptions(e.target);
                     }
                     updateDescription(card);
                 }
