@@ -483,6 +483,7 @@
                     document.body.removeChild(renderContainer);
                     generatePdfBtn.textContent = 'Generate PDF';
                     generatePdfBtn.disabled = false;
+                    currentQuoteId = null; // Reset the quote ID after PDF generation
                 }
             };
 
@@ -753,7 +754,7 @@
                             if(selectedColourKey === 'synsport_eco') {
                                 finalPricePerSqm = 232.50;
                             } else { // easigrass
-                                finalPricePerSqm = 630.00;
+                                finalPricePerSqm = 489.50;
                             }
                         } else {
                             finalPricePerSqm = selectedSystem.pricePerSqm || 0;
