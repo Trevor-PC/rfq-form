@@ -287,18 +287,18 @@
             };
 
             const systemDescriptions = {
-                'flexiplay_35_color': "FlexiPlay35: 20mm Shockpad, 15mm TPV (Thermoplastic Vulcanizate) Colour Rubber Crumb (Colour to be confirmed), Critical Fall Height (CFH) 1.3m. An allowance of 7% wastage has been included.",
-                'flexiplay_35_black': "FlexiPlay35: 20mm Shockpad, 15mm TPV (Thermoplastic Vulcanizate) Black Rubber Crumb, Critical Fall Height (CFH) 1.3m. An allowance of 7% wastage has been included.",
-                'flexiplay_55_color': "FlexiPlay55: 40mm Shockpad, 15mm TPV (Thermoplastic Vulcanizate) Colour Rubber Crumb, (Colour to be confirmed) Critical Fall Height (CFH) 2.4m. An allowance of 7% wastage has been included.",
-                'flexiplay_55_black': "FlexiPlay55: 40mm Shockpad, 15mm TPV (Thermoplastic Vulcanizate) Black Rubber Crumb, Critical Fall Height (CFH) 2.4m. An allowance of 7% wastage has been included.",
-                'flexiplay_85_color': "FlexiPlay85: 70mm Shockpad, 15mm TPV (Thermoplastic Vulcanizate) Colour Rubber Crumb, (Colour to be confirmed) Critical Fall Height (CFH) 3.0m. An allowance of 7% wastage has been included.",
-                'flexiplay_85_black': "FlexiPlay85: 70mm Shockpad, 15mm TPV (Thermoplastic Vulcanizate) Black Rubber Crumb, Critical Fall Height (CFH) 3.0m. An allowance of 7% wastage has been included.",
-                'flexiturf_40_synsport_eco': "FlexiTurf40: 40mm Shockpad, Turf Type: 25mm Eco Green, Critical Fall Height (CFH) 1.6m. An allowance of 7% wastage has been included.",
-                'flexiturf_60_synsport_eco': "FlexiTurf60: 60mm Shockpad, Turf Type: 25mm Eco Green, Critical Fall Height (CFH) 1.8m. An allowance of 7% wastage has been included.",
-                'flexiturf_70_synsport_eco': "FlexiTurf70: 70mm Shockpad, Turf Type: 25mm Eco Green, Critical Fall Height (CFH) 2.4m. An allowance of 7% wastage has been included.",
-                'flexiturf_40_easigrass': "FlexiTurf40: 40mm Shockpad, Turf Type: 25mm Prem Green, Critical Fall Height (CFH) 1.6m. An allowance of 7% wastage has been included.",
-                'flexiturf_60_easigrass': "FlexiTurf60: 60mm Shockpad, Turf Type: 25mm Prem Green, Critical Fall Height (CFH) 1.8m. An allowance of 7% wastage has been included.",
-                'flexiturf_70_easigrass': "FlexiTurf70: 70mm Shockpad, Turf Type: 25mm Prem Green, Critical Fall Height (CFH) 2.4m. An allowance of 7% wastage has been included.",
+                'flexiplay_35_color': "FlexiPlay35: 20mm Shockpad, 15mm TPV (Thermoplastic Vulcanizate) Colour Rubber Crumb (Colour to be confirmed), Critical Fall Height (CFH) 1.3m.",
+                'flexiplay_35_black': "FlexiPlay35: 20mm Shockpad, 15mm TPV (Thermoplastic Vulcanizate) Black Rubber Crumb, Critical Fall Height (CFH) 1.3m.",
+                'flexiplay_55_color': "FlexiPlay55: 40mm Shockpad, 15mm TPV (Thermoplastic Vulcanizate) Colour Rubber Crumb, (Colour to be confirmed) Critical Fall Height (CFH) 2.4m.",
+                'flexiplay_55_black': "FlexiPlay55: 40mm Shockpad, 15mm TPV (Thermoplastic Vulcanizate) Black Rubber Crumb, Critical Fall Height (CFH) 2.4m.",
+                'flexiplay_85_color': "FlexiPlay85: 70mm Shockpad, 15mm TPV (Thermoplastic Vulcanizate) Colour Rubber Crumb, (Colour to be confirmed) Critical Fall Height (CFH) 3.0m.",
+                'flexiplay_85_black': "FlexiPlay85: 70mm Shockpad, 15mm TPV (Thermoplastic Vulcanizate) Black Rubber Crumb, Critical Fall Height (CFH) 3.0m.",
+                'flexiturf_40_synsport_eco': "FlexiTurf40: 40mm Shockpad, Turf Type: 25mm Eco Green, Critical Fall Height (CFH) 1.6m.",
+                'flexiturf_60_synsport_eco': "FlexiTurf60: 60mm Shockpad, Turf Type: 25mm Eco Green, Critical Fall Height (CFH) 1.8m.",
+                'flexiturf_70_synsport_eco': "FlexiTurf70: 70mm Shockpad, Turf Type: 25mm Eco Green, Critical Fall Height (CFH) 2.4m.",
+                'flexiturf_40_easigrass': "FlexiTurf40: 40mm Shockpad, Turf Type: 25mm Prem Green, Critical Fall Height (CFH) 1.6m.",
+                'flexiturf_60_easigrass': "FlexiTurf60: 60mm Shockpad, Turf Type: 25mm Prem Green, Critical Fall Height (CFH) 1.8m.",
+                'flexiturf_70_easigrass': "FlexiTurf70: 70mm Shockpad, Turf Type: 25mm Prem Green, Critical Fall Height (CFH) 2.4m.",
                 'artificial_turf_synsport_eco': "Eco Artificial Turf Surfacing, 25mm",
                 'artificial_turf_easigrass': "Premium Artificial Turf Surfacing, 25mm",
                 'black_crumb_15mm_black': "15mm Black Rubber Crumb only no shock pad"
@@ -415,47 +415,38 @@
                     tableHeaderCanvas = tableHeaderPart.canvas; // Store for reuse
                     addTableHeader(); // Add header to the first page
 
-                    // --- 3. Group, measure, and render Table Rows ---
+                    // --- 3. Group, measure, and render Table Rows (including aggregated base prep/install) ---
                     const rows = Array.from(quoteOutput.querySelectorAll('table tbody tr'));
-                    const rowGroups = [];
-                    let currentGroup = [];
-                    rows.forEach(row => {
-                        // A new group starts with a row that is NOT a sub-item (base prep/install)
-                        if (!row.classList.contains('bg-gray-50/50')) {
-                            if (currentGroup.length > 0) rowGroups.push(currentGroup);
-                            currentGroup = [];
-                        }
-                        currentGroup.push(row);
-                    });
-                    if (currentGroup.length > 0) rowGroups.push(currentGroup);
-
-                    for (const group of rowGroups) {
-                        const groupWrapper = document.createElement('div');
-                        groupWrapper.style.padding = '0 32px';
-                        const tempTableForGroup = document.createElement('table');
-                        tempTableForGroup.className = 'w-full table-fixed';
+                    // No longer need complex grouping logic, treat each row individually
+                    
+                    for (const row of rows) {
+                         const rowWrapper = document.createElement('div');
+                        rowWrapper.style.padding = '0 32px';
+                        const tempTableForRow = document.createElement('table');
+                        tempTableForRow.className = 'w-full table-fixed';
                         // Add colgroup to enforce widths in PDF rendering
                         const colgroup = document.createElement('colgroup');
                         colgroup.innerHTML = '<col style="width: 50%"><col style="width: 16.66%"><col style="width: 16.66%"><col style="width: 16.66%">';
-                        tempTableForGroup.appendChild(colgroup);
+                        tempTableForRow.appendChild(colgroup);
 
                         const tempTbody = document.createElement('tbody');
-                        group.forEach(row => tempTbody.appendChild(row.cloneNode(true)));
-                        tempTableForGroup.appendChild(tempTbody);
-                        groupWrapper.appendChild(tempTableForGroup);
+                        tempTbody.appendChild(row.cloneNode(true))
+                        tempTableForRow.appendChild(tempTbody);
+                        rowWrapper.appendChild(tempTableForRow);
                         
-                        const groupPart = await getRenderedPart(groupWrapper);
+                        const rowPart = await getRenderedPart(rowWrapper);
                         
-                        // Page break logic: if the current group doesn't fit, add a new page
-                        if (cursorY + groupPart.imgHeight > pdfHeight - margin) {
+                        // Page break logic: if the current row doesn't fit, add a new page and header
+                        if (cursorY + rowPart.imgHeight > pdfHeight - margin) {
                             pdf.addPage();
                             cursorY = margin;
                             addTableHeader();
                         }
                         
-                        pdf.addImage(groupPart.canvas.toDataURL('image/png'), 'PNG', margin, cursorY, contentWidth, groupPart.imgHeight);
-                        cursorY += groupPart.imgHeight;
+                        pdf.addImage(rowPart.canvas.toDataURL('image/png'), 'PNG', margin, cursorY, contentWidth, rowPart.imgHeight);
+                        cursorY += rowPart.imgHeight;
                     }
+
 
                     // --- 4. Render and add the Footer ---
                     const footerContainer = document.createElement('div');
@@ -528,15 +519,15 @@
                 let defaultDescription = '';
 
                 if (systemKey.startsWith('flexiplay') || systemKey.startsWith('flexiturf') || systemKey === 'artificial_turf' || systemKey === 'black_crumb_15mm') {
-                    const colorKey = card.querySelector('.color-select').value;
-                    const descriptionKey = `${systemKey}_${colorKey}`;
+                    const colourKey = card.querySelector('.color-select').value; // Changed variable name
+                    const descriptionKey = `${systemKey}_${colourKey}`;
                     defaultDescription = systemDescriptions[descriptionKey];
                     
                     if (!defaultDescription && systemKey.startsWith('flexiturf')) { // Fallback for original turf
                         const selectedSystem = systemPricing[systemKey];
                         const systemName = selectedSystem.name;
-                        const colorName = card.querySelector(`.color-select option[value="${colorKey}"]`).textContent;
-                        defaultDescription = `${systemName}, Turf Type: ${colorName}. An allowance of 7% wastage has been included.`;
+                        const colourName = card.querySelector(`.color-select option[value="${colourKey}"]`).textContent; // Changed variable name
+                        defaultDescription = `${systemName}, Turf Type: ${colourName}. An allowance of 7% wastage has been included.`;
                     }
                 }
                 
@@ -720,8 +711,15 @@
                 
                 const quoteItemsBody = document.getElementById('quote-items-body');
                 quoteItemsBody.innerHTML = ''; 
+                let quoteItemsHTML = '';
                 let subtotal = 0;
-                let totalSqm = 0;
+                let totalBasePrepSqm = 0;
+                let totalInstallationSqm = 0;
+                let totalBasePrepCost = 0;
+                let totalInstallationCost = 0;
+                let lastBasePrepDescription = "G5 base prepared for the installation of impact surfacing, including edge paving to ensure a clean and finished perimeter"; // Default description
+                let avgBasePrepPricePerSqm = 0;
+                let avgInstallationPricePerSqm = 0;
 
                 const areaElements = areasContainer.querySelectorAll('.area-card');
                 if(areaElements.length === 0) {
@@ -761,14 +759,12 @@
                         }
 
                         const materialLineTotal = materialSqm * finalPricePerSqm;
-                        
                         subtotal += materialLineTotal;
 
-                        // Get the description from the textarea (it's always populated with default or edited text)
                         const detailedDescription = area.querySelector('.custom-desc-area').value;
                         
-                        // --- Add Material Line to Quote ---
-                        quoteItemsBody.innerHTML += `
+                        // Add Material Line
+                        quoteItemsHTML += `
                             <tr class="border-b border-black">
                                 <td class="p-3 align-top">
                                     <p class="font-semibold">${areaDescription}</p>
@@ -780,42 +776,55 @@
                             </tr>
                         `;
 
-                        // --- Base Preparation Calculation & Add Line to Quote ---
+                        // Accumulate Base Prep and Installation totals
                         if (basePrepCostPerSqm > 0) {
                             const basePrepTotal = sqm * basePrepCostPerSqm;
                             subtotal += basePrepTotal;
-                            const basePrepDescription = area.querySelector('.base-prep-desc').value;
-
-                            quoteItemsBody.innerHTML += `
-                                <tr class="border-b border-black bg-gray-50/50">
-                                    <td class="p-3 align-top">
-                                        <p class="pl-4 text-gray-800 text-xs">└ ${basePrepDescription}</p>
-                                    </td>
-                                    <td class="text-right p-3 align-top">${sqm.toFixed(2)}</td>
-                                    <td class="text-right p-3 align-top">${formatCurrency(basePrepCostPerSqm)}</td>
-                                    <td class="text-right p-3 align-top font-semibold">${formatCurrency(basePrepTotal)}</td>
-                                </tr>
-                            `;
+                            totalBasePrepSqm += sqm;
+                            totalBasePrepCost += basePrepTotal;
+                            lastBasePrepDescription = area.querySelector('.base-prep-desc').value || lastBasePrepDescription; // Use last entered description or default
                         }
 
-                        // --- Installation Calculation & Add Line to Quote ---
                         if (installationCostPerSqm > 0) {
                             const installationTotal = sqm * installationCostPerSqm;
                             subtotal += installationTotal;
-
-                            quoteItemsBody.innerHTML += `
-                                <tr class="border-b border-black bg-gray-50/50">
-                                    <td class="p-3 align-top">
-                                        <p class="pl-4 text-gray-800 text-xs">└ Installation of impact surfacing</p>
-                                    </td>
-                                    <td class="text-right p-3 align-top">${sqm.toFixed(2)}</td>
-                                    <td class="text-right p-3 align-top">${formatCurrency(installationCostPerSqm)}</td>
-                                    <td class="text-right p-3 align-top font-semibold">${formatCurrency(installationTotal)}</td>
-                                </tr>
-                            `;
+                            totalInstallationSqm += sqm;
+                            totalInstallationCost += installationTotal;
                         }
                     }
                 });
+
+                // --- ADD AGGREGATED BASE PREP AND INSTALLATION LINES ---
+                if (totalBasePrepCost > 0) {
+                     avgBasePrepPricePerSqm = totalBasePrepCost / totalBasePrepSqm;
+                     quoteItemsHTML += `
+                        <tr class="border-b border-black bg-gray-50/50">
+                            <td class="p-3 align-top">
+                                <p class="font-semibold">Base Preparation</p>
+                                <p class="text-xs text-gray-600">${lastBasePrepDescription}</p>
+                            </td>
+                            <td class="text-right p-3 align-top">${totalBasePrepSqm.toFixed(2)}</td>
+                            <td class="text-right p-3 align-top">${formatCurrency(avgBasePrepPricePerSqm)}</td>
+                            <td class="text-right p-3 align-top font-semibold">${formatCurrency(totalBasePrepCost)}</td>
+                        </tr>
+                    `;
+                }
+
+                 if (totalInstallationCost > 0) {
+                    avgInstallationPricePerSqm = totalInstallationCost / totalInstallationSqm;
+                    quoteItemsHTML += `
+                        <tr class="border-b border-black bg-gray-50/50">
+                            <td class="p-3 align-top">
+                                <p class="font-semibold">Installation</p>
+                                <p class="text-xs text-gray-600">Installation of impact surfacing</p>
+                             </td>
+                            <td class="text-right p-3 align-top">${totalInstallationSqm.toFixed(2)}</td>
+                            <td class="text-right p-3 align-top">${formatCurrency(avgInstallationPricePerSqm)}</td>
+                            <td class="text-right p-3 align-top font-semibold">${formatCurrency(totalInstallationCost)}</td>
+                        </tr>
+                    `;
+                }
+
 
                 // --- GATHER ADDITIONAL COSTS ---
                 const costElements = additionalCostsContainer.querySelectorAll('.area-card');
@@ -840,7 +849,7 @@
 
                         const total = qty * price;
                         subtotal += total;
-                        quoteItemsBody.innerHTML += `
+                        quoteItemsHTML += `
                             <tr class="border-b border-black">
                                 <td class="p-3 align-top">
                                     <p class="font-semibold">${description}</p>
@@ -853,10 +862,13 @@
                     }
                 });
 
-                if (areaElements.length === 0 && !hasAdditionalCosts) {
-                    showModal('Please add at least one area or one additional cost to generate a quote.');
+                if (areaElements.length === 0 && !hasAdditionalCosts && totalBasePrepCost === 0 && totalInstallationCost === 0) {
+                     showModal('Please add at least one area, base prep/install, or one additional cost to generate a quote.');
                     return;
                 }
+
+                // Append all HTML at once
+                 quoteItemsBody.innerHTML = quoteItemsHTML;
 
 
                 // --- 2. CALCULATE TOTALS ---
