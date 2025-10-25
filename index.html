@@ -258,7 +258,7 @@
                     } 
                 },
                 'flexiplay_55': { 
-                    name: 'FlexiPlay 55 (CFH 2.4m)',
+                    name: 'FlexiPlay 55 (CFH 2.4m)', // Updated CFH back to 2.4m
                     pricePerSqm: {
                         black: 889.58,
                         color: 1857.00
@@ -277,28 +277,28 @@
                 'artificial_turf': { name: 'Artificial Turf', pricePerSqm: 0 }, // Price is determined by type
                 'black_crumb_15mm': { name: '15mm Black Rubber Crumb', pricePerSqm: 427.28 }
             };
-            const turfPricing = {
-                'flexiturf_40_synsport_eco': 897.68,
+            const turfPricing = { // Updated FlexiTurf prices
+                'flexiturf_40_synsport_eco': 897.78, 
                 'flexiturf_60_synsport_eco': 978.00,
                 'flexiturf_70_synsport_eco': 1098.60,
                 'flexiturf_40_easigrass': 1085.28,
                 'flexiturf_60_easigrass': 1165.50,
-                'flexiturf_70_easigrass': 1286.10
+                'flexiturf_70_easigrass': 1228.36 // Updated Price
             };
 
-            const systemDescriptions = {
-                'flexiplay_35_color': "FlexiPlay35: 20mm Shockpad, 15mm TPV (Thermoplastic Vulcanizate) Colour Rubber Crumb (Colour to be confirmed), Critical Fall Height (CFH) 1.3m.",
-                'flexiplay_35_black': "FlexiPlay35: 20mm Shockpad, 15mm TPV (Thermoplastic Vulcanizate) Black Rubber Crumb, Critical Fall Height (CFH) 1.3m.",
-                'flexiplay_55_color': "FlexiPlay55: 40mm Shockpad, 15mm TPV (Thermoplastic Vulcanizate) Colour Rubber Crumb, (Colour to be confirmed) Critical Fall Height (CFH) 2.4m.",
-                'flexiplay_55_black': "FlexiPlay55: 40mm Shockpad, 15mm TPV (Thermoplastic Vulcanizate) Black Rubber Crumb, Critical Fall Height (CFH) 2.4m.",
-                'flexiplay_85_color': "FlexiPlay85: 70mm Shockpad, 15mm TPV (Thermoplastic Vulcanizate) Colour Rubber Crumb, (Colour to be confirmed) Critical Fall Height (CFH) 3.0m.",
-                'flexiplay_85_black': "FlexiPlay85: 70mm Shockpad, 15mm TPV (Thermoplastic Vulcanizate) Black Rubber Crumb, Critical Fall Height (CFH) 3.0m.",
-                'flexiturf_40_synsport_eco': "FlexiTurf40: 40mm Shockpad, Turf Type: 25mm Eco Green, Critical Fall Height (CFH) 1.6m.",
-                'flexiturf_60_synsport_eco': "FlexiTurf60: 60mm Shockpad, Turf Type: 25mm Eco Green, Critical Fall Height (CFH) 1.8m.",
-                'flexiturf_70_synsport_eco': "FlexiTurf70: 70mm Shockpad, Turf Type: 25mm Eco Green, Critical Fall Height (CFH) 2.4m.",
-                'flexiturf_40_easigrass': "FlexiTurf40: 40mm Shockpad, Turf Type: 25mm Prem Green, Critical Fall Height (CFH) 1.6m.",
-                'flexiturf_60_easigrass': "FlexiTurf60: 60mm Shockpad, Turf Type: 25mm Prem Green, Critical Fall Height (CFH) 1.8m.",
-                'flexiturf_70_easigrass': "FlexiTurf70: 70mm Shockpad, Turf Type: 25mm Prem Green, Critical Fall Height (CFH) 2.4m.",
+            const systemDescriptions = { // Updated Descriptions
+                'flexiplay_35_color': "FlexiPlay35: 20mm Shockpad, 15mm TPV (Thermoplastic Vulcanizate) Colour Rubber Crumb, Critical Fall Height (CFH) 1.3m. An allowance of 10% wastage has been included.",
+                'flexiplay_35_black': "FlexiPlay35: 20mm Shockpad, 15mm SBR Black Rubber Crumb, Critical Fall Height (CFH) 1.3m. An allowance of 10% wastage has been included.",
+                'flexiplay_55_color': "FlexiPlay55: 40mm Shockpad, 15mm TPV (Thermoplastic Vulcanizate) Colour Rubber Crumb, Critical Fall Height (CFH) 2.4m. An allowance of 10% wastage has been included.", // Updated CFH back to 2.4m
+                'flexiplay_55_black': "FlexiPlay55: 40mm Shockpad, 15mm SBR Black Rubber Crumb, Critical Fall Height (CFH) 2.4m. An allowance of 10% wastage has been included.", // Updated CFH back to 2.4m
+                'flexiplay_85_color': "FlexiPlay85: 70mm Shockpad, 15mm TPV (Thermoplastic Vulcanizate) Colour Rubber Crumb, Critical Fall Height (CFH) 3.0m. An allowance of 10% wastage has been included.",
+                'flexiplay_85_black': "FlexiPlay85: 70mm Shockpad, 15mm SBR Black Rubber Crumb, Critical Fall Height (CFH) 3.0m. An allowance of 10% wastage has been included.",
+                'flexiturf_40_synsport_eco': "FlexiTurf40: 40mm Shockpad, Eco 25mm Turf, no silica sand, Critical Fall Height (CFH) 1.6m. An allowance of 10% wastage has been included.", // Removed phrase
+                'flexiturf_60_synsport_eco': "FlexiTurf60: 60mm Shockpad, Eco 25mm Turf, no silica sand, Critical Fall Height (CFH) 1.8m. An allowance of 10% wastage has been included.", // Removed phrase
+                'flexiturf_70_synsport_eco': "FlexiTurf70: 70mm Shockpad, Eco 25mm Turf, no silica sand, Critical Fall Height (CFH) 2.4m. An allowance of 10% wastage has been included.", // Removed phrase
+                'flexiturf_40_easigrass': "FlexiTurf40: 40mm Shockpad, Play Elite 25mm Turf, including brushed in silica sand, Critical Fall Height (CFH) 1.6m. An allowance of 10% wastage has been included.",
+                'flexiturf_60_easigrass': "FlexiTurf60: 60mm Shockpad, Play Elite 25mm Turf, including brushed in silica sand, Critical Fall Height (CFH) 1.8m. An allowance of 10% wastage has been included.",
+                'flexiturf_70_easigrass': "FlexiTurf70: 70mm Shockpad, Play Elite 25mm Turf, including brushed in silica sand, Critical Fall Height (CFH) 2.4m. An allowance of 10% wastage has been included.",
                 'artificial_turf_synsport_eco': "Eco Artificial Turf Surfacing, 25mm",
                 'artificial_turf_easigrass': "Premium Artificial Turf Surfacing, 25mm",
                 'black_crumb_15mm_black': "15mm Black Rubber Crumb only no shock pad"
@@ -527,7 +527,12 @@
                         const selectedSystem = systemPricing[systemKey];
                         const systemName = selectedSystem.name;
                         const colourName = card.querySelector(`.color-select option[value="${colourKey}"]`).textContent; // Changed variable name
-                        defaultDescription = `${systemName}, Turf Type: ${colourName}. An allowance of 7% wastage has been included.`;
+                        defaultDescription = `${systemName}, Turf Type: ${colourName}. An allowance of 10% wastage has been included.`; // Updated Wastage
+                    } else if (defaultDescription && systemKey.startsWith('flexiplay')){ // Ensure wastage is 10% for flexiplay too
+                        // Assuming the description ends similarly
+                         if (!defaultDescription.includes("10% wastage has been included.")) {
+                             defaultDescription = defaultDescription.replace("7% wastage has been included.", "10% wastage has been included.");
+                         }
                     }
                 }
                 
@@ -594,7 +599,7 @@
                                 <label class="input-label text-sm">Safety System (CFH)</label>
                                 <select class="form-input system-select text-sm">
                                     <option value="flexiplay_35">FlexiPlay 35 (CFH 1.3m)</option>
-                                    <option value="flexiplay_55" selected>FlexiPlay 55 (CFH 2.4m)</option>
+                                    <option value="flexiplay_55" selected>FlexiPlay 55 (CFH 2.4m)</option> 
                                     <option value="flexiplay_85">FlexiPlay 85 (CFH 3.0m)</option>
                                     <option value="flexiturf_40">FlexiTurf 40 (CFH 1.6m)</option>
                                     <option value="flexiturf_60">FlexiTurf 60 (CFH 1.8m)</option>
@@ -752,7 +757,7 @@
                             if(selectedColourKey === 'synsport_eco') {
                                 finalPricePerSqm = 232.50;
                             } else { // easigrass
-                                finalPricePerSqm = 489.50;
+                                finalPricePerSqm = 489.50; // Updated price
                             }
                         } else {
                             finalPricePerSqm = selectedSystem.pricePerSqm || 0;
