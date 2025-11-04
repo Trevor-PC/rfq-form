@@ -294,7 +294,10 @@
                 'flexiturf_60': { name: 'FlexiTurf 60 (CFH 1.8m)' },
                 'flexiturf_70': { name: 'FlexiTurf 70 (CFH 2.4m)' },
                 'artificial_turf': { name: 'Artificial Turf', pricePerSqm: 0 }, // Price is determined by type
-                'black_crumb_15mm': { name: '15mm Black Rubber Crumb', pricePerSqm: 427.28 }
+                'black_crumb_15mm': { name: '15mm Black Rubber Crumb', pricePerSqm: 427.28 },
+                'flexipad_70': { name: 'FlexiPad 70 (CFH 2.4m)', pricePerSqm: 866.10 },
+                'flexipad_40': { name: 'FlexiPad 40 (CFH 1.6m)', pricePerSqm: 665.28 },
+                'flexipad_60': { name: 'FlexiPad 60 (CFH 1.8m)', pricePerSqm: 745.50 }
             };
             const turfPricing = { // Updated FlexiTurf prices
                 'flexiturf_40_synsport_eco': 897.78, 
@@ -320,7 +323,10 @@
                 'flexiturf_70_easigrass': "FlexiTurf70: 70mm Shockpad, Play Elite 25mm Turf, including brushed in silica sand, Critical Fall Height (CFH) 2.4m. An allowance of 10% wastage has been included.",
                 'artificial_turf_synsport_eco': "Eco Artificial Turf Surfacing, 25mm",
                 'artificial_turf_easigrass': "Premium Artificial Turf Surfacing, 25mm",
-                'black_crumb_15mm_black': "15mm Black Rubber Crumb only no shock pad"
+                'black_crumb_15mm_black': "15mm Black Rubber Crumb only no shock pad",
+                'flexipad_70_shockpad': "FlexiPad 70: 70mm Shockpad only. Critical Fall Height (CFH) 2.4m. An allowance of 10% wastage has been included.",
+                'flexipad_40_shockpad': "FlexiPad 40: 40mm Shockpad only. Critical Fall Height (CFH) of 1.6m. An allowance of 10% wastage has been included.",
+                'flexipad_60_shockpad': "FlexiPad 60: 60mm Shockpad Only, Critical Fall Height (CFH) 1.8m. An allowance of 10% wastage has been included."
             };
 
             // --- FUNCTIONS ---
@@ -705,7 +711,7 @@
                 const textarea = card.querySelector('.custom-desc-area');
                 let defaultDescription = '';
 
-                if (systemKey.startsWith('flexiplay') || systemKey.startsWith('flexiturf') || systemKey === 'artificial_turf' || systemKey === 'black_crumb_15mm') {
+                if (systemKey.startsWith('flexiplay') || systemKey.startsWith('flexiturf') || systemKey === 'artificial_turf' || systemKey === 'black_crumb_15mm' || systemKey === 'flexipad_70' || systemKey === 'flexipad_40' || systemKey === 'flexipad_60') {
                     const colourKey = card.querySelector('.color-select').value; // Changed variable name
                     const descriptionKey = `${systemKey}_${colourKey}`;
                     defaultDescription = systemDescriptions[descriptionKey];
@@ -758,6 +764,15 @@
                 } else if (selectedSystem === 'black_crumb_15mm') {
                     colourContainer.classList.remove('hidden');
                     colourSelect.innerHTML = `<option value="black">Black</option>`;
+                } else if (selectedSystem === 'flexipad_70') {
+                    colourContainer.classList.remove('hidden');
+                    colourSelect.innerHTML = `<option value="shockpad">Shockpad Only</option>`;
+                } else if (selectedSystem === 'flexipad_40') {
+                    colourContainer.classList.remove('hidden');
+                    colourSelect.innerHTML = `<option value="shockpad">Shockpad Only</option>`;
+                } else if (selectedSystem === 'flexipad_60') {
+                    colourContainer.classList.remove('hidden');
+                    colourSelect.innerHTML = `<option value="shockpad">Shockpad Only</option>`;
                 }
                 else {
                     colourContainer.classList.add('hidden');
@@ -791,6 +806,9 @@
                                     <option value="flexiturf_40">FlexiTurf 40 (CFH 1.6m)</option>
                                     <option value="flexiturf_60">FlexiTurf 60 (CFH 1.8m)</option>
                                     <option value="flexiturf_70">FlexiTurf 70 (CFH 2.4m)</option>
+                                    <option value="flexipad_70">FlexiPad 70 (CFH 2.4m)</option>
+                                    <option value="flexipad_40">FlexiPad 40 (CFH 1.6m)</option>
+                                    <option value="flexipad_60">FlexiPad 60 (CFH 1.8m)</option>
                                     <option value="artificial_turf">Artificial Turf</option>
                                     <option value="black_crumb_15mm">15mm Black Rubber Crumb</option>
                                 </select>
@@ -1156,4 +1174,10 @@
     </script>
 </body>
 </html>
+
+
+
+
+
+
 
